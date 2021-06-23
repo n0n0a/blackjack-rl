@@ -76,7 +76,7 @@ class BlackjackEnv(gym.Env):
             reward = self._judge_winner()
         return self._get_obs(), reward, done, {}
 
-    def make_samples(self, episode: int) -> List[(Tuple[int, int, bool], bool, int, Tuple[int, int, bool])]:
+    def make_samples(self, episode: int) -> List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]:
         samples = []
         for _ in range(episode):
             self.dealer = Hand().draw()

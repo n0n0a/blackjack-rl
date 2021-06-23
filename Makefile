@@ -4,6 +4,7 @@ clean:
 	rm -rf build
 	rm -rf dist
 	rm -rf *.egg-info
+	find . -name "*pycache*" | xargs rm -rf
 
 uninstall:
 	python3 -m pip uninstall blackjack-rl

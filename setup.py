@@ -2,7 +2,8 @@
 from setuptools import setup, find_packages
 
 INSTALL_REQUIRES = [
-    "numpy>=1.21.0",
+    "gym>=0.18.0",
+    "numpy>=1.21.0"
 ]
 
 setup(

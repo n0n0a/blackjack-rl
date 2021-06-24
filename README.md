@@ -1,2 +1,12 @@
 # blackjack-rl
-reinforcement learning  for blackjack game.
+blackjack-rl offers **blackjack environment** and **reinforcment learning method** for it.
+We first use value-based Q-Learning as solver method.
+
+# How to install
+Clone this repository, and excecute below command
+```shell
+$ make install
+```
+
+# How to learn
+Not yet implemented

@@ -66,7 +66,7 @@ class BlackjackEnv(gym.Env):
             return int(self.player.sum > self.dealer.sum) - int(self.player.sum < self.dealer.sum)
 
     def step(self, action: bool) -> Tuple[Tuple[int, int, bool], int, bool, dict]:
-        assert self.action_space.contains(action)
+        assert self.action_space.contains(int(action))
         done = False
         reward = 0
         if action:
@@ -85,7 +85,7 @@ class BlackjackEnv(gym.Env):
     def make_samples(self, episode: int) -> List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]:
         samples = []
         for _ in range(episode):
-            self.dealer = Hand().draw()
+            self.dealer = self.np_random.choice(range(2, 11))
             self.player.sum = self.np_random.choice(range(12, 21))
             self.player.have_eleven_ace = self.np_random.choice([True, False])
             observation = self._get_obs()

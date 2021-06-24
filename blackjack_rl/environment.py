@@ -4,16 +4,19 @@ from gym.utils import seeding
 from typing import Tuple, List
 from numpy.random import RandomState
 
+deck = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
+
 
 class Hand:
     def __init__(self, sum: int = 0, have_eleven_ace: bool = False, np_random: RandomState = None):
         self.sum = sum
         self.have_eleven_ace = have_eleven_ace
-        self.deck = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
+        self.deck = deck
         self.np_random = np_random
 
-    def draw(self) -> int:
-        card = self.np_random.choice(self.deck)
+    def draw(self, card: int = None) -> int:
+        if card is None:
+            card = self.np_random.choice(self.deck)
         self.sum += card
         if card == 1 and (not self.have_eleven_ace) and self.sum + 10 <= 21:
             self.have_eleven_ace = True
@@ -31,7 +34,7 @@ class BlackjackEnv(gym.Env):
             spaces.Discrete(32),
             spaces.Discrete(11),
             spaces.Discrete(2)))
-        self.deck = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
+        self.deck = deck
         self.np_random = None
         self.player = Hand()
         self.dealer = Hand()
@@ -93,6 +96,3 @@ class BlackjackEnv(gym.Env):
                 next_observation, reward, done, info = self.step(action)
                 samples.append((observation, action, reward, next_observation))
         return samples
-
-    def deck(self):
-        return self.player.deck

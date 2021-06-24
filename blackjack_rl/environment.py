@@ -63,7 +63,7 @@ class BlackjackEnv(gym.Env):
         if self.dealer.sum > 21:
             return 1
         else:
-            return int((self.player.sum > self.dealer.sum) - (self.player.sum < self.dealer.sum))
+            return int(self.player.sum > self.dealer.sum) - int(self.player.sum < self.dealer.sum)
 
     def step(self, action: bool) -> Tuple[Tuple[int, int, bool], int, bool, dict]:
         assert self.action_space.contains(action)

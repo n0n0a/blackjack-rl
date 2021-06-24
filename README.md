@@ -7,6 +7,7 @@ Clone this repository, and excecute below command
 ```shell
 $ make install
 ```
+*Required Python3.9~
 
 # How to learn
 Not yet implemented

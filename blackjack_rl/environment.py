@@ -85,9 +85,10 @@ class BlackjackEnv(gym.Env):
     def make_samples(self, episode: int) -> List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]:
         samples = []
         for _ in range(episode):
-            self.dealer = self.np_random.choice(range(2, 11))
             self.player.sum = self.np_random.choice(range(12, 21))
             self.player.have_eleven_ace = self.np_random.choice([True, False])
+            self.dealer.sum = self.np_random.choice(range(2, 11))
+            self.dealer.have_eleven_ace = self.dealer.sum == 11
             observation = self._get_obs()
             done = False
             reward = 0

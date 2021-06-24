@@ -48,7 +48,7 @@ class BlackjackEnv(gym.Env):
         return [seed]
 
     def _get_obs(self) -> Tuple[int, int, bool]:
-        return self.player.sum, self.dealer.sum, self.player.have_eleven_ace
+        return self.dealer.sum, self.player.sum, self.player.have_eleven_ace
 
     def reset(self) -> Tuple[int, int, bool]:
         self.player = Hand(np_random=self.np_random)

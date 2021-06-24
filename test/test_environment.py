@@ -1,6 +1,14 @@
-def plus(x, y):
-    return x + y
+from blackjack_rl.environment import BlackjackEnv
 
 
-def test_plus():
-    assert plus(1, 4) == 5
+def test_constructor():
+    env = BlackjackEnv()
+    assert env.player.sum in range(1, 12)
+    assert env.dealer.sum in range(1, 12)
+
+
+def test_reset():
+    env = BlackjackEnv()
+    env.reset()
+    assert env.player.sum in range(1, 12)
+    assert env.dealer.sum in range(1, 12)

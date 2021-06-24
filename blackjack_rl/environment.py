@@ -28,7 +28,7 @@ class Hand:
 
 
 class BlackjackEnv(gym.Env):
-    def __init__(self):
+    def __init__(self, seed: int = None):
         self.action_space = spaces.Discrete(2)
         self.observation_space = spaces.Tuple((
             spaces.Discrete(32),
@@ -38,7 +38,7 @@ class BlackjackEnv(gym.Env):
         self.np_random = None
         self.player = Hand()
         self.dealer = Hand()
-        self.seed()
+        self.seed(seed)
         self.reset()
 
     def seed(self, seed: int = None) -> List[int]:

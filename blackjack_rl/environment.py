@@ -15,10 +15,10 @@ class Hand:
     def draw(self) -> int:
         card = self.np_random.choice(self.deck)
         self.sum += card
-        if card == 1 and self.have_eleven_ace == False and self.sum + 10 <= 21:
+        if card == 1 and (not self.have_eleven_ace) and self.sum + 10 <= 21:
             self.have_eleven_ace = True
             self.sum += 10
-        elif self.sum > 21 and self.have_eleven_ace == True:
+        elif self.sum > 21 and self.have_eleven_ace:
             self.have_eleven_ace = False
             self.sum -= 10
         return card
@@ -31,9 +31,11 @@ class BlackjackEnv(gym.Env):
             spaces.Discrete(32),
             spaces.Discrete(11),
             spaces.Discrete(2)))
+        self.deck = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
         self.np_random = None
         self.player = Hand()
         self.dealer = Hand()
+        self.seed()
         self.reset()
 
     def seed(self, seed: int = None) -> List[int]:
@@ -46,7 +48,8 @@ class BlackjackEnv(gym.Env):
         return self.player.sum, self.dealer.sum, self.player.have_eleven_ace
 
     def reset(self) -> Tuple[int, int, bool]:
-        self.seed()
+        self.player = Hand(np_random=self.np_random)
+        self.dealer = Hand(np_random=self.np_random)
         self.player.draw()
         self.dealer.draw()
         return self._get_obs()
@@ -90,3 +93,6 @@ class BlackjackEnv(gym.Env):
                 next_observation, reward, done, info = self.step(action)
                 samples.append((observation, action, reward, next_observation))
         return samples
+
+    def deck(self):
+        return self.player.deck

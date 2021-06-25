@@ -6,7 +6,7 @@ from scipy.linalg import inv
 
 # state space(3dims) × action space(1dims)
 all_space = (10, 9, 2, 2)
-# state space size
+# all space size
 all_zize = np.prod(all_space)
 # regularize factor
 episilon = 0.01
@@ -58,7 +58,7 @@ class LSPIAgent(Agent):
     def translate_index(state: Tuple[int, int, bool], action: bool) -> int:
         offset = 1
         idx = 0
-        all = state + tuple(action)
+        all = state + (action,)
         for i, val in all:
             assert 0 <= val < all_space[i]
             idx += int(val) * offset

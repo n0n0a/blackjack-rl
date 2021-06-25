@@ -4,26 +4,32 @@ import numpy as np
 from scipy.sparse import csr_matrix
 from scipy.linalg import inv
 
-state_space = (10, 9, 2)
-action_space = (2)
-all_space = state_space + action_space
+# state space(3dims) × action space(1dims)
+all_space = (10, 9, 2, 2)
+# state space size
 all_zize = np.prod(all_space)
+# regularize factor
 episilon = 0.01
 
 
 class LSPIAgent(Agent):
     def __init__(self):
+        # vector w
         self.weight = np.zeros(all_zize, dtype=int)
 
     def take_action(self, state: Tuple[int, int, bool]) -> bool:
+        # greedy action
         if state[0] < 12:
             return True
+        # compare action-values
+        # if equal, take action "True"
         return self.weight[self.translate_index(state=state, action=True)] \
                >= self.weight[self.translate_index(state=state, action=False)]
 
     def train(self, data: List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]):
         A = self._calculate_A(data)
         b = self._calculate_b(data)
+        # after regularization, inverse matrix
         self.weight = inv(A + csr_matrix(episilon*np.eye(all_zize, dtype=float))) * b
 
     def _calculate_A(self, data: List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]) -> csr_matrix:
@@ -47,6 +53,7 @@ class LSPIAgent(Agent):
             b += phi_t * rtt
         return b
 
+    # function phi(s,a): (s,a) -> R^(all_size)
     @staticmethod
     def translate_index(state: Tuple[int, int, bool], action: bool) -> int:
         offset = 1

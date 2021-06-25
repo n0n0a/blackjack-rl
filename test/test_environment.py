@@ -1,4 +1,4 @@
-from blackjack_rl.environment import BlackjackEnv
+from blackjack_rl.environment import BlackjackEnv, Hand
 
 
 def test_constructor():
@@ -95,6 +95,20 @@ def test_make_samples():
     env = BlackjackEnv(seed=6)
     samples = env.make_samples(episode=10000)
     assert not [x[0] for x in samples
+                if (x[0][0] < 2 or 11 < x[0][0])
+                and (x[0][1] < 12 or 20 < x[0][1])
+                and (not x[0][2] in [True, False])]
+
+
+def test_run_one_game():
+    env = BlackjackEnv(seed=7)
+    trajectory = env.run_one_game()
+    assert not [x[0] for x in trajectory
+                if (x[0][0] < 2 or 11 < x[0][0])
+                and (x[0][1] < 12 or 20 < x[0][1])
+                and (not x[0][2] in [True, False])]
+    trajectory = env.run_one_game(init_hand=(Hand(sum=20, np_random=env.np_random), Hand(sum=2, np_random=env.np_random)))
+    assert not [x[0] for x in trajectory
                 if (x[0][0] < 2 or 11 < x[0][0])
                 and (x[0][1] < 12 or 20 < x[0][1])
                 and (not x[0][2] in [True, False])]

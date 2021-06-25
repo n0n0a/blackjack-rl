@@ -102,8 +102,8 @@ class BlackjackEnv(gym.Env):
         if init_hand is None:
             self.reset()
         else:
-            self.player = Hand[0]
-            self.dealer = Hand[1]
+            self.player = init_hand[0]
+            self.dealer = init_hand[1]
         observation = self._get_obs()
         done = False
         reward = 0

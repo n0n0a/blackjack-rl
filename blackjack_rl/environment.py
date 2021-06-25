@@ -110,3 +110,6 @@ class BlackjackEnv(gym.Env):
             next_observation, reward, done, info = self.step(action)
             trajectory.append((observation, action, reward, next_observation))
         return trajectory
+
+    def render(self, mode='human'):
+        raise NotImplementedError

@@ -36,15 +36,16 @@ class LSPIAgent(Agent):
                >= self.weight[self._translate_weight_idx(state=self._reindex_state(state), action=False)]
 
     # learn from data samples
-    def train(self, train_data: List[Trans]):
-        # only use appropriate data
-        train_data = [(self._reindex_state(d[0]), d[1], d[2], d[3]) for d in train_data if self._isvalid(d[0])]
-        if not train_data: return
-        A = self._calculate_A(train_data)
-        b = self._calculate_b(train_data)
-        # after regularization, inverse matrix
-        new_weight = inv(A + csc_matrix(episilon*np.eye(all_zize, dtype=float), dtype=float)) * b
-        self.weight = new_weight.toarray().ravel()
+    def train(self, train_data: List[Trans], epochs: int = 1):
+        for _ in range(epochs):
+            # only use appropriate data
+            train_data = [(self._reindex_state(d[0]), d[1], d[2], d[3]) for d in train_data if self._isvalid(d[0])]
+            if not train_data: return
+            A = self._calculate_A(train_data)
+            b = self._calculate_b(train_data)
+            # after regularization, inverse matrix
+            new_weight = inv(A + csc_matrix(episilon*np.eye(all_zize, dtype=float), dtype=float)) * b
+            self.weight = new_weight.toarray().ravel()
 
     # calculate A for updating weight
     def _calculate_A(self, train_data: List[Trans]) -> csc_matrix:

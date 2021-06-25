@@ -93,12 +93,13 @@ class BlackjackEnv(gym.Env):
                           np_random=self.np_random)
             dealer_draw = self.np_random.choice(range(2, 11))
             dealer = Hand(sum=dealer_draw,
-                          have_eleven_ace=dealer_draw==11,
+                          have_eleven_ace=(dealer_draw == 11),
                           np_random=self.np_random)
             samples.extend(self.run_one_game(init_hand=(player, dealer)))
         return samples
 
-    def run_one_game(self, init_hand: Tuple[Hand, Hand] = None) -> List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]:
+    def run_one_game(self, init_hand: Tuple[Hand, Hand] = None) -> List[
+        Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]:
         if init_hand is None:
             self.reset()
         else:

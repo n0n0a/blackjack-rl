@@ -135,8 +135,7 @@ def test_run_one_game():
     agent = LSPIAgent()
     samples = env.make_samples(episode=100)
     agent.train(train_data=samples)
-    policy = agent.take_action
-    trajectory = env.run_one_game(policy=policy)
+    trajectory = env.run_one_game(agent=agent)
     assert all(x for x in trajectory
                if (2 <= x[0][0] <= 11)
                and (2 <= x[0][1] <= 20)

@@ -3,7 +3,7 @@ from typing import Tuple, List, Union
 import numpy as np
 from scipy.sparse import csc_matrix
 from scipy.sparse.linalg import inv
-from blackjack_rl.typedef import State, Trans
+from blackjack_rl.typedef import State, Action, Trans
 
 # index = 0
 dealer_offset = 2
@@ -26,7 +26,7 @@ class LSPIAgent(Agent):
         self.weight = np.zeros(all_zize, dtype=float)
 
     # select action
-    def take_action(self, state: State) -> bool:
+    def take_action(self, state: State) -> Action:
         # greedy action
         if state[1] < 12:
             return True
@@ -82,7 +82,7 @@ class LSPIAgent(Agent):
         return dealer - dealer_offset, player - player_offset, have
 
     # function phi(s,a): (s,a) -> R^(all_size)
-    def _translate_weight_idx(self, state: State, action: bool) -> int:
+    def _translate_weight_idx(self, state: State, action: Action) -> int:
         offset = 1
         idx = 0
         all = state + (action,)

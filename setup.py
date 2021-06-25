@@ -4,7 +4,8 @@ from setuptools import setup, find_packages
 INSTALL_REQUIRES = [
     "gym>=0.18.0",
     "numpy>=1.21.0",
-    "pytest>=6.2.4"
+    "pytest>=6.2.4",
+    "scipy>=1.6.3",
 ]
 
 setup(

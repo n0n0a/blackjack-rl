@@ -3,7 +3,7 @@ from gym import spaces
 from gym.utils import seeding
 from typing import List, Tuple
 from numpy.random import RandomState
-from blackjack_rl.typedef import State, Trans
+from blackjack_rl.typedef import State, Action, Reward, Trans
 
 deck = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
 
@@ -84,7 +84,7 @@ class BlackjackEnv(gym.Env):
             return int(self.player.sum > self.dealer.sum) - int(self.player.sum < self.dealer.sum)
 
     # change state according to selected action
-    def step(self, action: bool) -> Tuple[State, int, bool, dict]:
+    def step(self, action: Action) -> Tuple[State, Reward, bool, dict]:
         done = False
         reward = 0
         if action:

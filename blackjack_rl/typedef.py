@@ -1,4 +1,6 @@
-from typing import Tuple, List, TypeVar
+from typing import Tuple
 
 State = Tuple[int, int, bool]
-Trans = Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]
+Action = bool
+Reward = int
+Trans = Tuple[State, Action, Reward, State]

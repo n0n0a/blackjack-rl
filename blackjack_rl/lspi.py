@@ -10,10 +10,10 @@ all_space = state_space + action_space
 all_zize = np.prod(all_space)
 episilon = 0.01
 
+
 class LSPIAgent(Agent):
     def __init__(self):
         self.weight = np.zeros(all_zize, dtype=int)
-
 
     def take_action(self, state: Tuple[int, int, bool]) -> bool:
         if state[0] < 12:

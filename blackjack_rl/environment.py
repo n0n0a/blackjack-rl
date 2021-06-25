@@ -7,7 +7,10 @@ from numpy.random import RandomState
 deck = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
 
 
+# hand management class for blackjack
 class Hand:
+    # sum: sum of hand card numbers
+    # have_eleven_ace: using eleven ace or not
     def __init__(self, sum: int = 0, have_eleven_ace: bool = False, np_random: RandomState = None):
         assert 0 <= sum <= 20
         self.sum = sum
@@ -18,6 +21,7 @@ class Hand:
         else:
             self.np_random = np_random
 
+    # automatically change hand states on drawing card
     def draw(self, card: int = None) -> int:
         if card is None:
             card = self.np_random.choice(self.deck)
@@ -33,6 +37,10 @@ class Hand:
 
 
 class BlackjackEnv(gym.Env):
+    # state consists of below 3 components
+    # dealer_sum: dealer hand card sum
+    # player_sum: player hand card sum
+    # player_have_eleven_ace: whether the player has eleven ace or not
     def __init__(self, seed: int = None):
         self.action_space = spaces.Discrete(2)
         self.observation_space = spaces.Tuple((
@@ -46,15 +54,18 @@ class BlackjackEnv(gym.Env):
         self.seed(seed)
         self.reset()
 
+    # set seed
     def seed(self, seed: int = None) -> List[int]:
         self.np_random, seed = seeding.np_random(seed)
         self.player.np_random = self.np_random
         self.dealer.np_random = self.np_random
         return [seed]
 
+    # get observation(state)
     def _get_obs(self) -> Tuple[int, int, bool]:
         return self.dealer.sum, self.player.sum, self.player.have_eleven_ace
 
+    # set initial state
     def reset(self) -> Tuple[int, int, bool]:
         self.player = Hand(np_random=self.np_random)
         self.dealer = Hand(np_random=self.np_random)
@@ -62,6 +73,7 @@ class BlackjackEnv(gym.Env):
         self.dealer.draw()
         return self._get_obs()
 
+    # judge which wins on terminal
     def _judge_winner(self) -> int:
         while self.dealer.sum < 17:
             self.dealer.draw()
@@ -70,6 +82,7 @@ class BlackjackEnv(gym.Env):
         else:
             return int(self.player.sum > self.dealer.sum) - int(self.player.sum < self.dealer.sum)
 
+    # change state according to selected action
     def step(self, action: bool) -> Tuple[Tuple[int, int, bool], int, bool, dict]:
         done = False
         reward = 0
@@ -86,6 +99,7 @@ class BlackjackEnv(gym.Env):
             reward = self._judge_winner()
         return self._get_obs(), reward, done, {}
 
+    # make particular samples efficiently
     def make_samples(self, episode: int) -> List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]:
         samples = []
         for _ in range(episode):
@@ -99,6 +113,7 @@ class BlackjackEnv(gym.Env):
             samples.extend(self.run_one_game(init_hand=(player, dealer)))
         return samples
 
+    # play one game and get game trajectory
     def run_one_game(self, init_hand: Tuple[Hand, Hand] = None) -> \
             List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]:
         if init_hand is None:
@@ -116,5 +131,6 @@ class BlackjackEnv(gym.Env):
             trajectory.append((observation, action, reward, next_observation))
         return trajectory
 
+    # not implemented
     def render(self, mode: str = 'human'):
         raise NotImplementedError

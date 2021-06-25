@@ -1,8 +1,9 @@
 import gym
 from gym import spaces
 from gym.utils import seeding
-from typing import Tuple, List
+from typing import List, Tuple
 from numpy.random import RandomState
+from blackjack_rl.typedef import State, Trans
 
 deck = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
 
@@ -62,11 +63,11 @@ class BlackjackEnv(gym.Env):
         return [seed]
 
     # get observation(state)
-    def _get_obs(self) -> Tuple[int, int, bool]:
+    def _get_obs(self) -> State:
         return self.dealer.sum, self.player.sum, self.player.have_eleven_ace
 
     # set initial state
-    def reset(self) -> Tuple[int, int, bool]:
+    def reset(self) -> State:
         self.player = Hand(np_random=self.np_random)
         self.dealer = Hand(np_random=self.np_random)
         self.player.draw()
@@ -83,7 +84,7 @@ class BlackjackEnv(gym.Env):
             return int(self.player.sum > self.dealer.sum) - int(self.player.sum < self.dealer.sum)
 
     # change state according to selected action
-    def step(self, action: bool) -> Tuple[Tuple[int, int, bool], int, bool, dict]:
+    def step(self, action: bool) -> Tuple[State, int, bool, dict]:
         done = False
         reward = 0
         if action:
@@ -100,7 +101,7 @@ class BlackjackEnv(gym.Env):
         return self._get_obs(), reward, done, {}
 
     # make particular samples efficiently
-    def make_samples(self, episode: int) -> List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]:
+    def make_samples(self, episode: int) -> List[Trans]:
         samples = []
         for _ in range(episode):
             player = Hand(sum=self.np_random.choice(range(12, 21)),
@@ -114,8 +115,7 @@ class BlackjackEnv(gym.Env):
         return samples
 
     # play one game and get game trajectory
-    def run_one_game(self, init_hand: Tuple[Hand, Hand] = None) -> \
-            List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]:
+    def run_one_game(self, init_hand: Tuple[Hand, Hand] = None) -> List[Trans]:
         if init_hand is None:
             self.reset()
         else:

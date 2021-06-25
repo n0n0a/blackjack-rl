@@ -12,7 +12,10 @@ class Hand:
         self.sum = sum
         self.have_eleven_ace = have_eleven_ace
         self.deck = deck
-        self.np_random = np_random
+        if np_random is None:
+            self.np_random, _ = seeding.np_random(None)
+        else:
+            self.np_random = np_random
 
     def draw(self, card: int = None) -> int:
         if card is None:
@@ -85,15 +88,31 @@ class BlackjackEnv(gym.Env):
     def make_samples(self, episode: int) -> List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]:
         samples = []
         for _ in range(episode):
-            self.player.sum = self.np_random.choice(range(12, 21))
-            self.player.have_eleven_ace = self.np_random.choice([True, False])
-            self.dealer.sum = self.np_random.choice(range(2, 11))
-            self.dealer.have_eleven_ace = self.dealer.sum == 11
-            observation = self._get_obs()
-            done = False
-            reward = 0
-            while not done:
-                action = self.np_random.choice([True, False])
-                next_observation, reward, done, info = self.step(action)
-                samples.append((observation, action, reward, next_observation))
+            player = Hand(sum=self.np_random.choice(range(12, 21)),
+                          have_eleven_ace=self.np_random.choice([True, False]),
+                          np_random=self.np_random)
+            dealer_draw = self.np_random.choice(range(2, 11))
+            dealer = Hand(sum=dealer_draw,
+                          have_eleven_ace=dealer_draw==11,
+                          np_random=self.np_random)
+            samples.extend(self.run_one_game(init_hand=(player, dealer)))
         return samples
+
+    def run_one_game(self, init_hand: Tuple[Hand, Hand] = None) -> List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]:
+        if init_hand is None:
+            self.reset()
+        else:
+            self.player = init_hand[0]
+            self.dealer = init_hand[1]
+        observation = self._get_obs()
+        done = False
+        reward = 0
+        trajectory = []
+        while not done:
+            action = self.np_random.choice([True, False])
+            next_observation, reward, done, info = self.step(action)
+            trajectory.append((observation, action, reward, next_observation))
+        return trajectory
+
+    def render(self, mode='human'):
+        raise NotImplementedError

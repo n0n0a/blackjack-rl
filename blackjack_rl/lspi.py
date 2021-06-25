@@ -3,6 +3,7 @@ from typing import Tuple, List, Union
 import numpy as np
 from scipy.sparse import csc_matrix
 from scipy.sparse.linalg import inv
+from blackjack_rl.typedef import State, Action, Trans
 
 # index = 0
 dealer_offset = 2
@@ -25,7 +26,8 @@ class LSPIAgent(Agent):
         self.weight = np.zeros(all_zize, dtype=float)
 
     # select action
-    def take_action(self, state: Tuple[int, int, bool]) -> bool:
+
+    def take_action(self, state: State) -> Action:
         # greedy action
         if state[1] < 12:
             return True
@@ -34,21 +36,21 @@ class LSPIAgent(Agent):
         return self.weight[self._translate_weight_idx(state=self._reindex_state(state), action=True)] \
                >= self.weight[self._translate_weight_idx(state=self._reindex_state(state), action=False)]
 
-    # learn from data samples
-    def train(self, data: List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]):
-        # only use appropriate data
-        data = [(self._reindex_state(d[0]), d[1], d[2], d[3]) for d in data if self._isvalid(d[0])]
-        if not data: return
-        A = self._calculate_A(data)
-        b = self._calculate_b(data)
-        # after regularization, inverse matrix
-        new_weight = inv(A + csc_matrix(episilon*np.eye(all_zize, dtype=float), dtype=float)) * b
-        self.weight = new_weight.toarray().ravel()
+    def train(self, train_data: List[Trans], epochs: int = 1):
+        for _ in range(epochs):
+            # only use appropriate data
+            train_data = [(self._reindex_state(d[0]), d[1], d[2], d[3]) for d in train_data if self._isvalid(d[0])]
+            if not train_data: return
+            A = self._calculate_A(train_data)
+            b = self._calculate_b(train_data)
+            # after regularization, inverse matrix
+            new_weight = inv(A + csc_matrix(episilon*np.eye(all_zize, dtype=float), dtype=float)) * b
+            self.weight = new_weight.toarray().ravel()
 
     # calculate A for updating weight
-    def _calculate_A(self, data: List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]) -> csc_matrix:
+    def _calculate_A(self, train_data: List[Trans]) -> csc_matrix:
         A = csc_matrix((all_zize, all_zize), dtype=float)
-        for d in data:
+        for d in train_data:
             st, at, rtt, stt = d
             phi_t, phi_tt = csc_matrix((all_zize, 1), dtype=float), csc_matrix((all_zize, 1), dtype=float)
             phi_t[self._translate_weight_idx(st, at), 0] = 1
@@ -61,9 +63,10 @@ class LSPIAgent(Agent):
         return A
 
     # calculate b for updating weight
-    def _calculate_b(self, data: List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]) -> csc_matrix:
+
+    def _calculate_b(self, train_data: List[Trans]) -> csc_matrix:
         b = csc_matrix((all_zize, 1), dtype=float)
-        for d in data:
+        for d in train_data:
             st, at, rtt, stt = d
             phi_t = csc_matrix((all_zize, 1), dtype=float)
             phi_t[self._translate_weight_idx(st, at)] = 1
@@ -71,17 +74,17 @@ class LSPIAgent(Agent):
         return b
 
     # included in state space
-    def _isvalid(self, state: Tuple[int, int, bool]) -> bool:
+    def _isvalid(self, state: State) -> bool:
         return (2 <= state[0] <= 11) and (12 <= state[1] <= 20)
 
     # reindex dealer and player state
-    def _reindex_state(self, state: Tuple[int, int, bool]) -> Tuple[int, int, bool]:
+    def _reindex_state(self, state: State) -> State:
         assert self._isvalid(state)
         dealer, player, have = state
         return dealer - dealer_offset, player - player_offset, have
 
     # function phi(s,a): (s,a) -> R^(all_size)
-    def _translate_weight_idx(self, state: Tuple[int, int, bool], action: bool) -> int:
+    def _translate_weight_idx(self, state: State, action: Action) -> int:
         offset = 1
         idx = 0
         all = state + (action,)

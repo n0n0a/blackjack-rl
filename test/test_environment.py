@@ -1,4 +1,5 @@
 from blackjack_rl.environment import BlackjackEnv, Hand
+from blackjack_rl.lspi import LSPIAgent
 
 
 def test_constructor():
@@ -102,12 +103,46 @@ def test_make_samples():
 
 def test_run_one_game():
     env = BlackjackEnv(seed=7)
+
+    # policy: random
     trajectory = env.run_one_game()
+    assert all(x for x in trajectory
+               if (2 <= x[0][0] <= 11)
+               and (2 <= x[0][1] <= 20)
+               and (x[0][2] in [True, False]))
+    trajectory = env.run_one_game(init_hand=(Hand(sum=20, np_random=env.np_random), Hand(sum=2, np_random=env.np_random)))
     assert all(x[0] for x in trajectory
                if (2 <= x[0][0] <= 11)
                and (12 <= x[0][1] <= 20)
                and (x[0][2] in [True, False]))
-    trajectory = env.run_one_game(init_hand=(Hand(sum=20, np_random=env.np_random), Hand(sum=2, np_random=env.np_random)))
+
+    # policy: draw only if sum < 17
+    policy = lambda s: s[1] < 17
+    trajectory = env.run_one_game(policy=policy)
+    assert all(x for x in trajectory
+               if (2 <= x[0][0] <= 11)
+               and (2 <= x[0][1] <= 20)
+               and (x[0][2] in [True, False]))
+    trajectory = env.run_one_game(init_hand=(Hand(sum=20, np_random=env.np_random),
+                                             Hand(sum=2, np_random=env.np_random)),
+                                  policy=policy)
+    assert all(x[0] for x in trajectory
+               if (2 <= x[0][0] <= 11)
+               and (12 <= x[0][1] <= 20)
+               and (x[0][2] in [True, False]))
+
+    # policy: LSPIAgent
+    agent = LSPIAgent()
+    samples = env.make_samples(episode=100)
+    agent.train(train_data=samples)
+    trajectory = env.run_one_game(agent=agent)
+    assert all(x for x in trajectory
+               if (2 <= x[0][0] <= 11)
+               and (2 <= x[0][1] <= 20)
+               and (x[0][2] in [True, False]))
+    trajectory = env.run_one_game(init_hand=(Hand(sum=20, np_random=env.np_random),
+                                             Hand(sum=2, np_random=env.np_random)),
+                                  policy=policy)
     assert all(x[0] for x in trajectory
                if (2 <= x[0][0] <= 11)
                and (12 <= x[0][1] <= 20)

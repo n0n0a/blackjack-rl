@@ -1,12 +1,13 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 from typing import Tuple, List
+from blackjack_rl.typedef import State, Action, Trans
 
 
-class Agent:
+class Agent(ABC):
     @abstractmethod
-    def take_action(self, state: Tuple[int, int, bool]) -> bool:
+    def take_action(cls, state: State) -> Action:
         raise NotImplementedError
 
     @abstractmethod
-    def train(self, data: List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]):
+    def train(cls, train_data: List[Trans]):
         raise NotImplementedError

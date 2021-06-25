@@ -44,7 +44,7 @@ def test_train():
                ((12, 6, False), False, 0, (1, 1, False)),
                ((21, 21, True), False, 0, (2, 10, False))]
     old_samples = samples.copy()
-    agent.train(data=samples)
+    agent.train(train_data=samples)
     assert agent.weight.shape == old_weight.shape
     assert all(agent.weight == 0)
 
@@ -61,7 +61,7 @@ def test_calculate_A():
     # one sample
     old_weight = agent.weight
     samples = [((0, 0, False), False, 0, (2, 12, False))]
-    A = agent._calculate_A(data=samples)
+    A = agent._calculate_A(train_data=samples)
     A = A.toarray()
     assert np.count_nonzero(A > 0.001) == 1
     assert abs(A[0, 0] - 1) < 0.001
@@ -70,7 +70,7 @@ def test_calculate_A():
 
     # one more sample
     samples.append(((3, 4, True), True, 0, (11, 19, True)))
-    A = agent._calculate_A(data=samples)
+    A = agent._calculate_A(train_data=samples)
     A = A.toarray()
     assert np.count_nonzero(A > 0.001) == 2
     assert abs(A[0, 0] - 1) < 0.001
@@ -86,14 +86,14 @@ def test_calculate_b():
     # one sample
     old_weight = agent.weight
     samples = [((0, 0, False), False, 1, (2, 12, False))]
-    b = agent._calculate_b(data=samples)
+    b = agent._calculate_b(train_data=samples)
     b = b.toarray()
     assert np.count_nonzero(b != 0) == 1
     assert abs(b[0, 0] - 1) < 0.001
 
     # one more sample
     samples.append(((3, 4, True), True, -1, (11, 19, True)))
-    b = agent._calculate_b(data=samples)
+    b = agent._calculate_b(train_data=samples)
     b = b.toarray()
     assert np.count_nonzero(b != 0) == 2
     assert abs(b[0, 0] - 1) < 0.001

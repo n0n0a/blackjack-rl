@@ -8,5 +8,5 @@ class Agent:
         raise NotImplementedError
 
     @abstractmethod
-    def train(self, data: List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]):
+    def train(self, train_data: List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]):
         raise NotImplementedError

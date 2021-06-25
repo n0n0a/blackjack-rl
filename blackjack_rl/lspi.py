@@ -35,20 +35,20 @@ class LSPIAgent(Agent):
                >= self.weight[self._translate_weight_idx(state=self._reindex_state(state), action=False)]
 
     # learn from data samples
-    def train(self, data: List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]):
+    def train(self, train_data: List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]):
         # only use appropriate data
-        data = [(self._reindex_state(d[0]), d[1], d[2], d[3]) for d in data if self._isvalid(d[0])]
-        if not data: return
-        A = self._calculate_A(data)
-        b = self._calculate_b(data)
+        train_data = [(self._reindex_state(d[0]), d[1], d[2], d[3]) for d in train_data if self._isvalid(d[0])]
+        if not train_data: return
+        A = self._calculate_A(train_data)
+        b = self._calculate_b(train_data)
         # after regularization, inverse matrix
         new_weight = inv(A + csc_matrix(episilon*np.eye(all_zize, dtype=float), dtype=float)) * b
         self.weight = new_weight.toarray().ravel()
 
     # calculate A for updating weight
-    def _calculate_A(self, data: List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]) -> csc_matrix:
+    def _calculate_A(self, train_data: List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]) -> csc_matrix:
         A = csc_matrix((all_zize, all_zize), dtype=float)
-        for d in data:
+        for d in train_data:
             st, at, rtt, stt = d
             phi_t, phi_tt = csc_matrix((all_zize, 1), dtype=float), csc_matrix((all_zize, 1), dtype=float)
             phi_t[self._translate_weight_idx(st, at), 0] = 1
@@ -61,9 +61,9 @@ class LSPIAgent(Agent):
         return A
 
     # calculate b for updating weight
-    def _calculate_b(self, data: List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]) -> csc_matrix:
+    def _calculate_b(self, train_data: List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]) -> csc_matrix:
         b = csc_matrix((all_zize, 1), dtype=float)
-        for d in data:
+        for d in train_data:
             st, at, rtt, stt = d
             phi_t = csc_matrix((all_zize, 1), dtype=float)
             phi_t[self._translate_weight_idx(st, at)] = 1

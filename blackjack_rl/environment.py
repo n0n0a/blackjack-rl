@@ -3,7 +3,7 @@ from gym import spaces
 from gym.utils import seeding
 from typing import List, Tuple
 from numpy.random import RandomState
-from blackjack_rl.typedef import State, Action, Reward, Trans
+from blackjack_rl.typedef import State, Action, Reward, Trans, Policy
 
 deck = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
 
@@ -115,18 +115,20 @@ class BlackjackEnv(gym.Env):
         return samples
 
     # play one game and get game trajectory
-    def run_one_game(self, init_hand: Tuple[Hand, Hand] = None) -> List[Trans]:
+    def run_one_game(self, init_hand: Tuple[Hand, Hand] = None, policy: Policy = None) -> List[Trans]:
         if init_hand is None:
             self.reset()
         else:
             self.player = init_hand[0]
             self.dealer = init_hand[1]
+        if policy is None:
+            policy = lambda s: self.np_random.choice([True, False])
         observation = self._get_obs()
         done = False
         reward = 0
         trajectory = []
         while not done:
-            action = self.np_random.choice([True, False])
+            action = policy(observation)
             next_observation, reward, done, info = self.step(action)
             trajectory.append((observation, action, reward, next_observation))
         return trajectory

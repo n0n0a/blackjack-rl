@@ -20,9 +20,11 @@ class LSPIAgent(Agent):
         # vector w
         self.weight = np.zeros(all_zize, dtype=float)
 
+    # set weight = 0
     def reset_weight(self):
         self.weight = np.zeros(all_zize, dtype=float)
 
+    # select action
     def take_action(self, state: Tuple[int, int, bool]) -> bool:
         # greedy action
         if state[1] < 12:
@@ -32,6 +34,7 @@ class LSPIAgent(Agent):
         return self.weight[self._translate_weight_idx(state=self._reindex_state(state), action=True)] \
                >= self.weight[self._translate_weight_idx(state=self._reindex_state(state), action=False)]
 
+    # learn from data samples
     def train(self, data: List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]):
         # only use appropriate data
         data = [(self._reindex_state(d[0]), d[1], d[2], d[3]) for d in data if self._isvalid(d[0])]
@@ -42,6 +45,7 @@ class LSPIAgent(Agent):
         new_weight = inv(A + csc_matrix(episilon*np.eye(all_zize, dtype=float), dtype=float)) * b
         self.weight = new_weight.toarray().ravel()
 
+    # calculate A for updating weight
     def _calculate_A(self, data: List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]) -> csc_matrix:
         A = csc_matrix((all_zize, all_zize), dtype=float)
         for d in data:
@@ -56,6 +60,7 @@ class LSPIAgent(Agent):
             A += phi_t * td_phi
         return A
 
+    # calculate b for updating weight
     def _calculate_b(self, data: List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]) -> csc_matrix:
         b = csc_matrix((all_zize, 1), dtype=float)
         for d in data:

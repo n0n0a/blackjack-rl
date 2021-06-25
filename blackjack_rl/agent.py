@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from typing import Tuple, List, Union
+from typing import Tuple, List
 
 
 class Agent:
@@ -8,6 +8,5 @@ class Agent:
         raise NotImplementedError
 
     @abstractmethod
-    def train(self, data: Union[List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]],
-                               Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]):
+    def train(self, data: List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]):
         raise NotImplementedError

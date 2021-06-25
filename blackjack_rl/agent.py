@@ -2,6 +2,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Tuple, List
 from blackjack_rl.typedef import State, Trans
 
+
 class Agent:
     @abstractmethod
     def take_action(self, state: State) -> bool:

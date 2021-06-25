@@ -12,7 +12,10 @@ class Hand:
         self.sum = sum
         self.have_eleven_ace = have_eleven_ace
         self.deck = deck
-        self.np_random = np_random
+        if np_random is None:
+            self.np_random, _ = seeding.np_random(None)
+        else:
+            self.np_random = np_random
 
     def draw(self, card: int = None) -> int:
         if card is None:

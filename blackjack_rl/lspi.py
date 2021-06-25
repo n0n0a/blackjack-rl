@@ -14,16 +14,6 @@ class LSPIAgent(Agent):
     def __init__(self):
         self.weight = np.zeros(all_zize, dtype=int)
 
-    @staticmethod
-    def translate_index(state: Tuple[int, int, bool], action: bool) -> int:
-        offset = 1
-        idx = 0
-        all = state + tuple(action)
-        for i, val in all:
-            assert 0 <= val < all_space[i]
-            idx += int(val) * offset
-            offset *= all_space[i]
-        return idx
 
     def take_action(self, state: Tuple[int, int, bool]) -> bool:
         if state[0] < 12:
@@ -56,3 +46,14 @@ class LSPIAgent(Agent):
             phi_t[self.translate_index(st,at)] = 1
             b += phi_t * rtt
         return b
+
+    @staticmethod
+    def translate_index(state: Tuple[int, int, bool], action: bool) -> int:
+        offset = 1
+        idx = 0
+        all = state + tuple(action)
+        for i, val in all:
+            assert 0 <= val < all_space[i]
+            idx += int(val) * offset
+            offset *= all_space[i]
+        return idx

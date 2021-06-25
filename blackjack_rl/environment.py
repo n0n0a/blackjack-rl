@@ -9,6 +9,7 @@ deck = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
 
 class Hand:
     def __init__(self, sum: int = 0, have_eleven_ace: bool = False, np_random: RandomState = None):
+        assert 0 <= sum <= 20
         self.sum = sum
         self.have_eleven_ace = have_eleven_ace
         self.deck = deck
@@ -20,6 +21,7 @@ class Hand:
     def draw(self, card: int = None) -> int:
         if card is None:
             card = self.np_random.choice(self.deck)
+        assert 0 <= card <= 10
         self.sum += card
         if card == 1 and (not self.have_eleven_ace) and self.sum + 10 <= 21:
             self.have_eleven_ace = True
@@ -69,7 +71,6 @@ class BlackjackEnv(gym.Env):
             return int(self.player.sum > self.dealer.sum) - int(self.player.sum < self.dealer.sum)
 
     def step(self, action: bool) -> Tuple[Tuple[int, int, bool], int, bool, dict]:
-        assert self.action_space.contains(int(action))
         done = False
         reward = 0
         if action:
@@ -98,8 +99,8 @@ class BlackjackEnv(gym.Env):
             samples.extend(self.run_one_game(init_hand=(player, dealer)))
         return samples
 
-    def run_one_game(self, init_hand: Tuple[Hand, Hand] = None) -> List[
-        Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]:
+    def run_one_game(self, init_hand: Tuple[Hand, Hand] = None) -> \
+            List[Tuple[Tuple[int, int, bool], bool, int, Tuple[int, int, bool]]]:
         if init_hand is None:
             self.reset()
         else:

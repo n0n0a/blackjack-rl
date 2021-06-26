@@ -40,7 +40,7 @@ class Hand:
 
 class BlackjackEnv(gym.Env):
     # state consists of below 3 components
-    # dealer_sum: dealer hand card sum
+    # dealer_init: dealer initial hand
     # player_sum: player hand card sum
     # player_have_eleven_ace: whether the player has eleven ace or not
     def __init__(self, seed: int = None):

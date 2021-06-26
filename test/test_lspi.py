@@ -100,6 +100,23 @@ def test_calculate_b():
     assert abs(b[313, 0] + 1) < 0.001
 
 
+def test_calculate_ab():
+    agent = LSPIAgent()
+
+    # one sample
+    old_weight = agent.weight
+    samples = [((0, 0, False), False, -1, (2, 12, True))]
+    A, b = agent._calculate_ab(train_data=samples)
+    A = A.toarray()
+    assert np.count_nonzero(A > 0.001) == 1
+    assert abs(A[0, 0] - 1) < 0.001
+    assert np.count_nonzero(A < -0.001) == 1
+    assert abs(A[0, 270] + 1) < 0.001
+    b = b.toarray()
+    assert np.count_nonzero(b != 0) == 1
+    assert abs(b[0, 0] + 1) < 0.001
+
+
 def test_isvalid():
     agent = LSPIAgent()
 
@@ -119,12 +136,11 @@ def test_reindex_state():
     assert agent._reindex_state(sample) == (9, 8, False)
 
 
-def _translate_weight_idx():
+def test_translate_weight_idx():
     agent = LSPIAgent()
 
     # easy case
     sample = (0, 2, True)
-    assert agent._reindex_state(sample, False) == 110
+    assert agent._translate_weight_idx(sample, False) == 110
     sample = (9, 8, False)
-    assert agent._reindex_state(sample, True) == 269
-    pass
+    assert agent._translate_weight_idx(sample, True) == 269

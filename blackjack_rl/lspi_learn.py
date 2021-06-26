@@ -5,11 +5,11 @@ import os, pickle
 # environment seed
 seed = 5
 # make_sample episode count
-N_episode = 3000
+N_episode = 5000
 # LSPI train count
 N_train = 10000
 # Evaluation count per leaning
-N_eval = 1000
+N_eval = 2000
 # data dir
 data_dir = "../data"
 

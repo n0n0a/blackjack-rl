@@ -23,11 +23,10 @@ def calculate_sum(data, weights):
     phi_t, phi_tt = csc_matrix((all_size, 1), dtype=float), csc_matrix((all_size, 1), dtype=float)
     phi_t[LSPIAgent._translate_weight_idx(st, at), 0] = 1
     if LSPIAgent._isvalid(state=stt):
-        action = True
-        if st[1] >= 12:
-            action = weights[LSPIAgent._translate_weight_idx(state=LSPIAgent._reindex_state(stt), action=True)] \
-                     > weights[LSPIAgent._translate_weight_idx(state=LSPIAgent._reindex_state(stt), action=False)]
-        phi_tt[LSPIAgent._translate_weight_idx(LSPIAgent._reindex_state(stt), action), 0] = 1
+        stt = LSPIAgent._reindex_state(stt)
+        action = weights[LSPIAgent._translate_weight_idx(state=stt, action=True)] \
+                 > weights[LSPIAgent._translate_weight_idx(state=stt, action=False)]
+        phi_tt[LSPIAgent._translate_weight_idx(stt, action), 0] = 1
     td_phi = phi_t - phi_tt
     td_phi = csc_matrix(td_phi.toarray().T)
     return phi_t * td_phi, phi_t * rtt
@@ -58,6 +57,7 @@ class LSPIAgent(Agent):
             return True
         # compare action-values
         # if equal, take action "False"
+        assert self._isvalid(state)
         return self.weight[self._translate_weight_idx(state=self._reindex_state(state), action=True)] \
                > self.weight[self._translate_weight_idx(state=self._reindex_state(state), action=False)]
 
@@ -65,7 +65,8 @@ class LSPIAgent(Agent):
         for _ in range(epochs):
             # only use appropriate data
             train_data = [(self._reindex_state(d[0]), d[1], d[2], d[3]) for d in train_data if self._isvalid(d[0])]
-            if not train_data: return
+            if not train_data:
+                return
             # A = self._calculate_A(train_data)
             # b = self._calculate_b(train_data)
             A, b = self._calculate_ab(train_data)

@@ -21,13 +21,13 @@ def measure_process_time():
     start = time.time()
     for _ in range(N_train):
         agent.train(train_data=mini_batch)
-    print(f"make_sample(): {time.time()-start} ms")
+    print(f"train(): {time.time()-start} ms")
 
     # time of run_game
     start = time.time()
     for t in range(N_run):
         env.run_one_game(agent=agent)
-    print(f"make_sample(): {time.time()-start} ms")
+    print(f"run_one_game(): {time.time()-start} ms")
 
 
 if __name__ == '__main__':

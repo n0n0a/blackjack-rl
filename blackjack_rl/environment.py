@@ -77,12 +77,13 @@ class BlackjackEnv(gym.Env):
 
     # judge which wins on terminal
     def _judge_winner(self) -> int:
-        while self.dealer.sum < 17:
-            self.dealer.draw()
-        if self.dealer.sum > 21:
+        dealer = Hand(sum=self.dealer.sum, have_eleven_ace=self.dealer.have_eleven_ace, np_random=self.np_random)
+        while dealer.sum < 17:
+            dealer.draw()
+        if dealer.sum > 21:
             return 1
         else:
-            return int(self.player.sum > self.dealer.sum) - int(self.player.sum < self.dealer.sum)
+            return int(self.player.sum > dealer.sum) - int(self.player.sum < dealer.sum)
 
     # change state according to selected action
     def step(self, action: Action) -> Tuple[State, Reward, bool, dict]:
@@ -137,6 +138,7 @@ class BlackjackEnv(gym.Env):
             action = policy(observation)
             next_observation, reward, done, info = self.step(action)
             trajectory.append((observation, action, reward, next_observation))
+            observation = next_observation
         return trajectory
 
     # not implemented

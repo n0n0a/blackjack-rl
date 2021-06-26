@@ -15,7 +15,7 @@ all_space = (10, 9, 2, 2)
 all_size = np.prod(all_space)
 # regularize factor
 episilon = 0.0000001
-
+tau = 0.9
 
 # out of class due to multiprocessing
 def calculate_sum(data, weights):
@@ -71,9 +71,10 @@ class LSPIAgent(Agent):
             # b = self._calculate_b(train_data)
             A, b = self._calculate_ab(train_data)
             # after regularization, inverse matrix
-            # new_weight = inv(A) * b
             new_weight = inv(A + csc_matrix(episilon * np.eye(all_size, dtype=float), dtype=float)) * b
+            # new_weight = inv(A) * b
             self.weight = new_weight.toarray().ravel()
+            # self.weight = self.weight * tau + new_weight.toarray().ravel() * (1.0 - tau)
 
     # calculate A for updating weight
     def _calculate_ab(self, train_data: List[Trans]) -> Tuple[csc_matrix, csc_matrix]:

@@ -1,26 +1,43 @@
 from blackjack_rl.environment import BlackjackEnv
 from blackjack_rl.lspi import LSPIAgent
-import os
+import os, pickle
 
+# environment seed
+seed = 5
+# make_sample episode count
+N_episode = 3000
 # LSPI train count
-N_train = 100
-# LSPI test count
-N_test = 10
+N_train = 10000
+# Evaluation count per leaning
+N_eval = 1000
+# data dir
 data_dir = "../data"
 
 
 if __name__ == '__main__':
-    # 初期化
-    env = BlackjackEnv(seed=0)
+    # initialize
+    env = BlackjackEnv(seed=seed)
     agent = LSPIAgent()
 
-    # 訓練データ作成
-    samples = env.make_samples(episode=10000)
+    # prepare training data
+    samples = env.make_samples(episode=N_episode)
 
-    # 学習
-    for epoch in N_train:
-        agent.train(data=samples)
-        # TODO: evaluate LSPI policy
-        # TODO: store results
+    # learning
+    rewards = []
+    for epoch in range(N_train):
+        agent.train(train_data=samples)
+        env.run_one_game()
+        mean = 0.0
+        for _ in range(N_eval):
+            result = env.run_one_game(agent=agent)
+            if _ == 0:
+                print(result)
+            mean += result[-1][2]
+        mean /= N_eval
+        # think reward mean as performance
+        rewards.append(mean)
+        print(f"epoch:{epoch} performance:{mean}")
 
-    # TODO: save results
+    # save result
+    with open(os.path.join(data_dir, "lspi_rewards.txt"), "wb") as f:
+        pickle.dump(rewards, f)

@@ -61,20 +61,24 @@ class LSPIAgent(Agent):
         return self.weight[self._translate_weight_idx(state=self._reindex_state(state), action=True)] \
                > self.weight[self._translate_weight_idx(state=self._reindex_state(state), action=False)]
 
-    def train(self, train_data: List[Trans], epochs: int = 1):
+    # update weight from train_data
+    # return whether weight is updated or not
+    def train(self, train_data: List[Trans], epochs: int = 1) -> bool:
         for _ in range(epochs):
             # only use appropriate data
-            train_data = [(self._reindex_state(d[0]), d[1], d[2], d[3]) for d in train_data if self._isvalid(d[0])]
+            train_data = [(self.reindex_state(d[0]), d[1], d[2], d[3]) for d in train_data if self._isvalid(d[0])]
             if not train_data:
-                return
+                return False
             # A = self._calculate_A(train_data)
             # b = self._calculate_b(train_data)
             A, b = self._calculate_ab(train_data)
-            # after regularization, inverse matrix
-            new_weight = inv(A + csc_matrix(episilon * np.eye(all_size, dtype=float), dtype=float)) * b
+            new_weight = inv(A + csc_matrix(episilon * np.eye(all_size), dtype=float)) * b
             # new_weight = inv(A) * b
+            different = np.any(self.weight != new_weight.toarray().ravel())
             self.weight = new_weight.toarray().ravel()
             # self.weight = self.weight * tau + new_weight.toarray().ravel() * (1.0 - tau)
+            return different
+
 
     # calculate A for updating weight
     def _calculate_ab(self, train_data: List[Trans]) -> Tuple[csc_matrix, csc_matrix]:

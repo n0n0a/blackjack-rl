@@ -9,7 +9,7 @@ N_episode = 5000
 # LSPI train count
 N_train = 10000
 # Evaluation count per leaning
-N_eval = 2000
+N_eval = 100000
 # data dir
 data_dir = "../data"
 
@@ -25,7 +25,8 @@ if __name__ == '__main__':
     # learning
     rewards = []
     for epoch in range(N_train):
-        agent.train(train_data=samples)
+        updated = agent.train(train_data=samples)
+        assert updated
         env.run_one_game()
         mean = 0.0
         for _ in range(N_eval):

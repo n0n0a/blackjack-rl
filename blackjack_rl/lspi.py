@@ -66,7 +66,7 @@ class LSPIAgent(Agent):
     def train(self, train_data: List[Trans], epochs: int = 1) -> bool:
         for _ in range(epochs):
             # only use appropriate data
-            train_data = [(self.reindex_state(d[0]), d[1], d[2], d[3]) for d in train_data if self._isvalid(d[0])]
+            train_data = [(self._reindex_state(d[0]), d[1], d[2], d[3]) for d in train_data if self._isvalid(d[0])]
             if not train_data:
                 return False
             # A = self._calculate_A(train_data)

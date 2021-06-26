@@ -26,8 +26,9 @@ if __name__ == '__main__':
     rewards = []
     for epoch in range(N_train):
         updated = agent.train(train_data=samples)
-        assert updated
-        env.run_one_game()
+        # resampling
+        if not updated:
+            samples = env.make_samples(episode=N_episode, agent=agent)
         mean = 0.0
         for _ in range(N_eval):
             result = env.run_one_game(agent=agent)

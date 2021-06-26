@@ -39,5 +39,6 @@ if __name__ == '__main__':
         print(f"epoch:{epoch} performance:{mean}")
 
     # save result
+    os.makedirs(data_dir, exist_ok=True)
     with open(os.path.join(data_dir, "lspi_rewards.txt"), "wb") as f:
         pickle.dump(rewards, f)

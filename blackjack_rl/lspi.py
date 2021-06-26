@@ -82,7 +82,7 @@ class LSPIAgent(Agent):
         results = None
         weights = [self.weight] * len(train_data)
         with futures.ProcessPoolExecutor() as executor:
-            results = executor.map(calculate_sum, train_data, weights, chunksize=10)
+            results = executor.map(calculate_sum, train_data, weights, chunksize=50)
         for res in results:
             A += res[0]
             b += res[1]

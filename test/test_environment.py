@@ -31,18 +31,18 @@ def test_judge_winner():
 
     # lose
     assert env._judge_winner() == -1
-    assert env.dealer.sum == 19
+    assert env.dealer.sum == 11
 
     # win
     env.reset()
     assert env._judge_winner() == 1
-    assert env.dealer.sum == 23
+    assert env.dealer.sum == 10
 
     # draw
     env.reset()
     env.player.sum = 18
     assert env._judge_winner() == 0
-    assert env.dealer.sum == 18
+    assert env.dealer.sum == 8
 
 
 def test_step():
@@ -73,7 +73,7 @@ def test_step():
     assert not done
     assert info == {}
     observation, reward, done, info = env.step(False)
-    assert observation == (17, 18, False)
+    assert observation == (8, 18, False)
     assert reward == 1
     assert done
     assert info == {}

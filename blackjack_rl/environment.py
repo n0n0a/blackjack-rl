@@ -103,7 +103,7 @@ class BlackjackEnv(gym.Env):
         return self._get_obs(), reward, done, {}
 
     # make particular samples efficiently
-    def make_samples(self, episode: int) -> List[Trans]:
+    def make_samples(self, episode: int, agent: Agent = None) -> List[Trans]:
         samples = []
         for _ in range(episode):
             player = Hand(sum=self.np_random.choice(range(12, 21)),
@@ -113,7 +113,7 @@ class BlackjackEnv(gym.Env):
             dealer = Hand(sum=dealer_draw,
                           have_eleven_ace=(dealer_draw == 11),
                           np_random=self.np_random)
-            samples.extend(self.run_one_game(init_hand=(player, dealer)))
+            samples.extend(self.run_one_game(init_hand=(player, dealer), agent=agent))
         return samples
 
     # play one game and get game trajectory

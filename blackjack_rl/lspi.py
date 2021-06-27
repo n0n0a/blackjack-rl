@@ -18,14 +18,14 @@ episilon = 0.0000001
 tau = 0.9
 
 # out of class due to multiprocessing
-def calculate_sum(data, weights):
+def calculate_sum(data: Trans, weight: np.ndarray):
     st, at, rtt, stt = data
     phi_t, phi_tt = csc_matrix((all_size, 1), dtype=float), csc_matrix((all_size, 1), dtype=float)
     phi_t[LSPIAgent._translate_weight_idx(st, at), 0] = 1
-    if LSPIAgent._isvalid(state=stt):
+    if 12 <= stt[1] < 21 and at:
         stt = LSPIAgent._reindex_state(stt)
-        action = weights[LSPIAgent._translate_weight_idx(state=stt, action=True)] \
-                 > weights[LSPIAgent._translate_weight_idx(state=stt, action=False)]
+        action = weight[LSPIAgent._translate_weight_idx(state=stt, action=True)] \
+                 > weight[LSPIAgent._translate_weight_idx(state=stt, action=False)]
         phi_tt[LSPIAgent._translate_weight_idx(stt, action), 0] = 1
     td_phi = phi_t - phi_tt
     td_phi = csc_matrix(td_phi.toarray().T)
@@ -101,7 +101,7 @@ class LSPIAgent(Agent):
             st, at, rtt, stt = d
             phi_t, phi_tt = csc_matrix((all_size, 1), dtype=float), csc_matrix((all_size, 1), dtype=float)
             phi_t[self._translate_weight_idx(st, at), 0] = 1
-            if self._isvalid(state=stt):
+            if 12 <= stt[1] < 21 and at:
                 phi_tt[self._translate_weight_idx(self._reindex_state(stt), self.take_action(state=stt)), 0] = 1
             td_phi = phi_t - phi_tt
             td_phi = csc_matrix(td_phi.toarray().T)

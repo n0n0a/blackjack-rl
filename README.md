@@ -25,7 +25,7 @@ blackjack-rl
 │   ├── agent               --- blackjack agents
 │   ├── envs                --- blackjack environments   
 │   ├── script              --- executable scripts
-│   └── utils
+│   └── utils               --- utilities
 ├── setup.py
 └── test                    --- tests (pytest)
 

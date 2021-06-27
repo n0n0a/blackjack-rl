@@ -1,9 +1,9 @@
-from blackjack_rl.environment import BlackjackEnv
-from blackjack_rl.lspi import LSPIAgent
+from blackjack_rl.envs.eleven_ace import BlackjackEnv
+from blackjack_rl.agent.lspi import LSPIAgent
 import os, pickle
 
 # environment seed
-seed = 5
+seed = 3
 # make_sample episode count
 N_episode = 30000
 # LSPI train count
@@ -11,7 +11,7 @@ N_train = 10000
 # Evaluation count per leaning
 N_eval = 10000
 # data dir
-data_dir = "../data"
+data_dir = "../../data"
 
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
-from blackjack_rl.lspi import LSPIAgent
+from blackjack_rl.agent.lspi import LSPIAgent
 import numpy as np
-from blackjack_rl.environment import BlackjackEnv
+from blackjack_rl.envs.eleven_ace import BlackjackEnv
 
 
 def test_constructor():
@@ -117,7 +117,7 @@ def test_calculate_ab():
 def test_isvalid():
     agent = LSPIAgent()
 
-    # samples given by env
+    # samples given by envs
     env = BlackjackEnv(seed=0)
     samples = env.make_samples(episode=1000)
     assert all(agent._isvalid(s[0]) for s in samples)

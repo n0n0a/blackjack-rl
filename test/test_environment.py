@@ -1,5 +1,5 @@
-from blackjack_rl.environment import BlackjackEnv, Hand
-from blackjack_rl.lspi import LSPIAgent
+from blackjack_rl.envs.eleven_ace import BlackjackEnv, Hand
+from blackjack_rl.agent.lspi import LSPIAgent
 
 
 def test_constructor():

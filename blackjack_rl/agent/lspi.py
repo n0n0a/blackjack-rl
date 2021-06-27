@@ -1,9 +1,9 @@
-from blackjack_rl.agent import Agent
-from typing import Tuple, List, Union
+from blackjack_rl.agent.agent import Agent
+from typing import Tuple, List
 import numpy as np
 from scipy.sparse import csc_matrix
 from scipy.sparse.linalg import inv
-from blackjack_rl.typedef import State, Action, Trans
+from blackjack_rl.utils.typedef import State, Action, Trans
 from concurrent import futures
 
 # index = 0

@@ -3,8 +3,8 @@ from gym import spaces
 from gym.utils import seeding
 from typing import List, Tuple
 from numpy.random import RandomState
-from blackjack_rl.agent import Agent
-from blackjack_rl.typedef import State, Action, Reward, Trans, Policy
+from blackjack_rl.agent.agent import Agent
+from blackjack_rl.utils.typedef import State, Action, Reward, Trans, Policy
 
 deck = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
 

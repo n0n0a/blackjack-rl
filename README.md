@@ -14,3 +14,28 @@ $ make install
 $ cd blackjack_rl/script
 $ python lspi_learn.py
 ```
+
+# Direcotory structure
+```shell
+blackjack-rl
+├── LICENSE
+├── Makefile
+├── README.md
+├── blackjack_rl
+│   ├── agent               --- blackjack agents
+│   │   ├── agent.py
+│   │   └── lspi.py
+│   ├── envs                --- blackjack environments   
+│   │   └── eleven_ace.py
+│   ├── script              --- executable scripts
+│   │   ├── benchmark.py
+│   │   └── lspi_learn.py
+│   └── utils
+│       └── typedef.py
+├── setup.py
+└── test                    --- tests (pytest)
+    ├── test_environment.py
+    ├── test_hand.py
+    └── test_lspi.py
+
+```

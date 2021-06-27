@@ -1,4 +1,4 @@
-from blackjack_rl.env.eleven_ace import Hand
+from blackjack_rl.envs.eleven_ace import Hand
 from gym.utils import seeding
 
 

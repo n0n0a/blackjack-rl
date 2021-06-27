@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/envs python
 from setuptools import setup, find_packages
 
 INSTALL_REQUIRES = [

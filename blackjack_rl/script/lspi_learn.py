@@ -1,4 +1,4 @@
-from blackjack_rl.env.eleven_ace import BlackjackEnv
+from blackjack_rl.envs.eleven_ace import BlackjackEnv
 from blackjack_rl.agent.lspi import LSPIAgent
 import os, pickle
 

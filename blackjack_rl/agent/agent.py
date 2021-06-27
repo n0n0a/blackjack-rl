@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import Tuple, List
-from blackjack_rl.typedef import State, Action, Trans
+from typing import List
+from blackjack_rl.utils.typedef import State, Action, Trans
 
 
 class Agent(ABC):

@@ -1,6 +1,6 @@
-from blackjack_rl.lspi import LSPIAgent
+from blackjack_rl.agent.lspi import LSPIAgent
 import numpy as np
-from blackjack_rl.environment import BlackjackEnv
+from blackjack_rl.env.eleven_ace import BlackjackEnv
 
 
 def test_constructor():

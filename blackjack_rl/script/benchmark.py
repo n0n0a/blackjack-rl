@@ -1,6 +1,6 @@
 import time
-from blackjack_rl.environment import BlackjackEnv
-from blackjack_rl.lspi import LSPIAgent
+from blackjack_rl.env.eleven_ace import BlackjackEnv
+from blackjack_rl.agent.lspi import LSPIAgent
 
 N_episode = 100000
 N_train = 1

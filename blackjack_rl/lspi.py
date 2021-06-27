@@ -7,10 +7,10 @@ from blackjack_rl.typedef import State, Action, Trans
 from concurrent import futures
 
 # index = 0
-dealer_offset = 2
+dealer_offset = 1
 player_offset = 12
 # state space(3dims) × action space(1dims)
-all_space = (10, 9, 2, 2)
+all_space = (10, 9, 3, 2)
 # all space size
 all_size = np.prod(all_space)
 # regularize factor
@@ -38,7 +38,7 @@ class LSPIAgent(Agent):
         self.weight = np.zeros(all_size, dtype=float)
         # for dsum in range(all_space[0]):
         #     for psum in range(all_space[1]):
-        #         for ace in [True, False]:
+        #         for ace in [0, 1, 2]:
         #             if psum < 20:
         #                 self.weight[self._translate_weight_idx((dsum, psum, ace), True)] = 1.0
         #                 self.weight[self._translate_weight_idx((dsum, psum, ace), False)] = -1.0
@@ -121,7 +121,7 @@ class LSPIAgent(Agent):
     # included in state space
     @staticmethod
     def _isvalid(state: State) -> bool:
-        return (2 <= state[0] <= 11) and (12 <= state[1] <= 20)
+        return (1 <= state[0] <= 10) and (12 <= state[1] <= 20)
 
     # reindex dealer and player state
     @staticmethod

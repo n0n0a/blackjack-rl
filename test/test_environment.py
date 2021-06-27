@@ -4,10 +4,10 @@ from blackjack_rl.lspi import LSPIAgent
 
 def test_constructor():
     env = BlackjackEnv(seed=1)
-    assert env.player.sum == 11
-    assert env.player.have_eleven_ace
+    assert env.player.sum == 10
+    assert env.player.ten_ace_count == 1
     assert env.dealer.sum == 5
-    assert not env.dealer.have_eleven_ace
+    assert env.dealer.ten_ace_count == 0
 
 
 def test_seed():
@@ -20,10 +20,10 @@ def test_reset():
     env = BlackjackEnv(seed=3)
     observation = env.reset()
     assert env.player.sum == 4
-    assert not env.player.have_eleven_ace
+    assert env.player.ten_ace_count == 0
     assert env.dealer.sum == 2
-    assert not env.player.have_eleven_ace
-    assert observation == (2, 4, False)
+    assert env.player.ten_ace_count == 0
+    assert observation == (2, 4, 0)
 
 
 def test_judge_winner():
@@ -31,7 +31,7 @@ def test_judge_winner():
 
     # lose
     assert env._judge_winner() == -1
-    assert env.dealer.sum == 11
+    assert env.dealer.sum == 10
 
     # win
     env.reset()
@@ -50,12 +50,12 @@ def test_step():
 
     # 1st trial
     observation, reward, done, info = env.step(True)
-    assert observation == (8, 17, False)
+    assert observation == (8, 17, 0)
     assert reward == 0
     assert not done
     assert info == {}
     observation, reward, done, info = env.step(True)
-    assert observation == (8, 27, False)
+    assert observation == (8, 27, 0)
     assert reward == -1
     assert done
     assert info == {}
@@ -63,17 +63,17 @@ def test_step():
     # 2nd trial
     env.reset()
     observation, reward, done, info = env.step(True)
-    assert observation == (8, 19, True)
+    assert observation == (8, 18, 1)
     assert reward == 0
     assert not done
     assert info == {}
     observation, reward, done, info = env.step(True)
-    assert observation == (8, 18, False)
+    assert observation == (8, 18, 0)
     assert reward == 0
     assert not done
     assert info == {}
     observation, reward, done, info = env.step(False)
-    assert observation == (8, 18, False)
+    assert observation == (8, 18, 0)
     assert reward == 1
     assert done
     assert info == {}
@@ -81,12 +81,12 @@ def test_step():
     # 3rd trial
     env.reset()
     observation, reward, done, info = env.step(True)
-    assert observation == (3, 16, False)
+    assert observation == (3, 16, 0)
     assert reward == 0
     assert not done
     assert info == {}
     observation, reward, done, info = env.step(True)
-    assert observation == (3, 23, False)
+    assert observation == (3, 23, 0)
     assert reward == -1
     assert done
     assert info == {}
@@ -96,9 +96,9 @@ def test_make_samples():
     env = BlackjackEnv(seed=6)
     samples = env.make_samples(episode=10000)
     assert all(x[0] for x in samples
-                if (2 <= x[0][0] <= 11)
+                if (1 <= x[0][0] <= 10)
                 and (12 <= x[0][1] <= 20)
-                and (x[0][2] in [True, False]))
+                and (x[0][2] in [0, 1, 2]))
 
 
 def test_run_one_game():
@@ -107,29 +107,29 @@ def test_run_one_game():
     # policy: random
     trajectory = env.run_one_game()
     assert all(x for x in trajectory
-               if (2 <= x[0][0] <= 11)
-               and (2 <= x[0][1] <= 20)
-               and (x[0][2] in [True, False]))
-    trajectory = env.run_one_game(init_hand=(Hand(sum=20, np_random=env.np_random), Hand(sum=2, np_random=env.np_random)))
+               if (1 <= x[0][0] <= 10)
+               and (1 <= x[0][1] <= 20)
+               and (x[0][2] in [0, 1, 2]))
+    trajectory = env.run_one_game(init_hand=(Hand(sum=2, open_card=2, np_random=env.np_random), Hand(sum=20, np_random=env.np_random)))
     assert all(x[0] for x in trajectory
-               if (2 <= x[0][0] <= 11)
+               if (1 <= x[0][0] <= 10)
                and (12 <= x[0][1] <= 20)
-               and (x[0][2] in [True, False]))
+               and (x[0][2] in [0, 1, 2]))
 
     # policy: draw only if sum < 17
     policy = lambda s: s[1] < 17
     trajectory = env.run_one_game(policy=policy)
     assert all(x for x in trajectory
-               if (2 <= x[0][0] <= 11)
-               and (2 <= x[0][1] <= 20)
-               and (x[0][2] in [True, False]))
-    trajectory = env.run_one_game(init_hand=(Hand(sum=20, np_random=env.np_random),
-                                             Hand(sum=2, np_random=env.np_random)),
+               if (1 <= x[0][0] <= 10)
+               and (1 <= x[0][1] <= 20)
+               and (x[0][2] in [0, 1, 2]))
+    trajectory = env.run_one_game(init_hand=(Hand(sum=2, open_card=2, np_random=env.np_random),
+                                             Hand(sum=20, np_random=env.np_random)),
                                   policy=policy)
     assert all(x[0] for x in trajectory
-               if (2 <= x[0][0] <= 11)
+               if (1 <= x[0][0] <= 10)
                and (12 <= x[0][1] <= 20)
-               and (x[0][2] in [True, False]))
+               and (x[0][2] in [0, 1, 2]))
 
     # policy: LSPIAgent
     agent = LSPIAgent()
@@ -137,13 +137,13 @@ def test_run_one_game():
     agent.train(train_data=samples)
     trajectory = env.run_one_game(agent=agent)
     assert all(x for x in trajectory
-               if (2 <= x[0][0] <= 11)
-               and (2 <= x[0][1] <= 20)
-               and (x[0][2] in [True, False]))
-    trajectory = env.run_one_game(init_hand=(Hand(sum=20, np_random=env.np_random),
-                                             Hand(sum=2, np_random=env.np_random)),
+               if (1 <= x[0][0] <= 10)
+               and (1 <= x[0][1] <= 20)
+               and (x[0][2] in [0, 1, 2]))
+    trajectory = env.run_one_game(init_hand=(Hand(sum=2, open_card=2, np_random=env.np_random),
+                                             Hand(sum=20, np_random=env.np_random)),
                                   policy=policy)
     assert all(x[0] for x in trajectory
-               if (2 <= x[0][0] <= 11)
+               if (1 <= x[0][0] <= 10)
                and (12 <= x[0][1] <= 20)
-               and (x[0][2] in [True, False]))
+               and (x[0][2] in [0, 1, 2]))

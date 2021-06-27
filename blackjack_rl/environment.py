@@ -13,10 +13,11 @@ deck = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
 class Hand:
     # sum: sum of hand card numbers
     # have_eleven_ace: using eleven ace or not
-    def __init__(self, sum: int = 0, have_eleven_ace: bool = False, np_random: RandomState = None):
+    def __init__(self, sum: int = 0, open_card: int = None, ten_ace_count: int = 0, np_random: RandomState = None):
         assert 0 <= sum <= 20
+        self.open_card = open_card
         self.sum = sum
-        self.have_eleven_ace = have_eleven_ace
+        self.ten_ace_count = ten_ace_count
         self.deck = deck
         if np_random is None:
             self.np_random, _ = seeding.np_random(None)
@@ -29,12 +30,14 @@ class Hand:
             card = self.np_random.choice(self.deck)
         assert 1 <= card <= 10
         self.sum += card
-        if card == 1 and (not self.have_eleven_ace) and self.sum + 10 <= 21:
-            self.have_eleven_ace = True
-            self.sum += 10
-        elif self.sum > 21 and self.have_eleven_ace:
-            self.have_eleven_ace = False
-            self.sum -= 10
+        if card == 1 and self.sum + 9 <= 21:
+            self.ten_ace_count += 1
+            self.sum += 9
+        while self.sum > 21 and self.ten_ace_count > 0:
+            self.ten_ace_count -= 1
+            self.sum -= 9
+        if self.open_card is None:
+            self.open_card = card
         return card
 
 
@@ -65,7 +68,8 @@ class BlackjackEnv(gym.Env):
 
     # get observation(state)
     def _get_obs(self) -> State:
-        return self.dealer.sum, self.player.sum, self.player.have_eleven_ace
+        assert self.dealer.open_card is not None
+        return self.dealer.open_card, self.player.sum, self.player.ten_ace_count
 
     # set initial state
     def reset(self) -> State:
@@ -77,7 +81,7 @@ class BlackjackEnv(gym.Env):
 
     # judge which wins on terminal
     def _judge_winner(self) -> int:
-        dealer = Hand(sum=self.dealer.sum, have_eleven_ace=self.dealer.have_eleven_ace, np_random=self.np_random)
+        dealer = Hand(sum=self.dealer.sum, ten_ace_count=self.dealer.ten_ace_count, np_random=self.np_random)
         while dealer.sum < 17:
             dealer.draw()
         if dealer.sum > 21:
@@ -107,13 +111,12 @@ class BlackjackEnv(gym.Env):
         samples = []
         for _ in range(episode):
             player = Hand(sum=self.np_random.choice(range(12, 21)),
-                          have_eleven_ace=self.np_random.choice([True, False]),
+                          open_card = self.np_random.choice(deck),
+                          ten_ace_count=self.np_random.choice([2, 1, 0]),
                           np_random=self.np_random)
-            dealer_draw = self.np_random.choice(range(2, 11))
-            dealer = Hand(sum=dealer_draw,
-                          have_eleven_ace=(dealer_draw == 11),
-                          np_random=self.np_random)
-            samples.extend(self.run_one_game(init_hand=(player, dealer), agent=agent))
+            dealer = Hand(np_random=self.np_random)
+            dealer.draw()
+            samples.extend(self.run_one_game(init_hand=(dealer, player), agent=agent))
         return samples
 
     # play one game and get game trajectory
@@ -124,8 +127,8 @@ class BlackjackEnv(gym.Env):
         if init_hand is None:
             self.reset()
         else:
-            self.player = init_hand[0]
-            self.dealer = init_hand[1]
+            self.dealer = init_hand[0]
+            self.player = init_hand[1]
         if agent is not None:
             policy = agent.take_action
         if policy is None:

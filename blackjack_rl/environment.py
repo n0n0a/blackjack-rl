@@ -27,7 +27,7 @@ class Hand:
     def draw(self, card: int = None) -> int:
         if card is None:
             card = self.np_random.choice(self.deck)
-        assert 0 <= card <= 10
+        assert 1 <= card <= 10
         self.sum += card
         if card == 1 and (not self.have_eleven_ace) and self.sum + 10 <= 21:
             self.have_eleven_ace = True

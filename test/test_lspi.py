@@ -65,8 +65,6 @@ def test_calculate_A():
     A = A.toarray()
     assert np.count_nonzero(A > 0.001) == 1
     assert abs(A[0, 0] - 1) < 0.001
-    assert np.count_nonzero(A < -0.001) == 1
-    assert abs(A[0, 90] + 1) < 0.001
 
     # one more sample
     samples.append(((3, 4, True), True, 0, (11, 19, True)))
@@ -110,8 +108,7 @@ def test_calculate_ab():
     A = A.toarray()
     assert np.count_nonzero(A > 0.001) == 1
     assert abs(A[0, 0] - 1) < 0.001
-    assert np.count_nonzero(A < -0.001) == 1
-    assert abs(A[0, 90] + 1) < 0.001
+    assert np.count_nonzero(A < -0.001) == 0
     b = b.toarray()
     assert np.count_nonzero(b != 0) == 1
     assert abs(b[0, 0] + 1) < 0.001

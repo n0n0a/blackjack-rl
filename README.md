@@ -10,4 +10,6 @@ $ make install
 *Required Python3.9~
 
 # ♤How to learn
-Not yet implemented
+```shell
+$ python lspi_learn.py
+```

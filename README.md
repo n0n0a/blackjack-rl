@@ -11,5 +11,6 @@ $ make install
 
 # ♤How to learn
 ```shell
+$ cd blackjack_rl/script
 $ python lspi_learn.py
 ```

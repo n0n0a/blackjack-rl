@@ -5,11 +5,11 @@ import os, pickle
 # environment seed
 seed = 5
 # make_sample episode count
-N_episode = 5000
+N_episode = 30000
 # LSPI train count
 N_train = 10000
 # Evaluation count per leaning
-N_eval = 100000
+N_eval = 10000
 # data dir
 data_dir = "../data"
 
@@ -26,9 +26,6 @@ if __name__ == '__main__':
     rewards = []
     for epoch in range(N_train):
         updated = agent.train(train_data=samples)
-        # resampling
-        if not updated:
-            samples = env.make_samples(episode=N_episode, agent=agent)
         mean = 0.0
         for _ in range(N_eval):
             result = env.run_one_game(agent=agent)
@@ -39,6 +36,10 @@ if __name__ == '__main__':
         # think reward mean as performance
         rewards.append(mean)
         print(f"epoch:{epoch} performance:{mean}")
+        # resampling
+        if not updated:
+            print("resampling...")
+            samples = env.make_samples(episode=N_episode, agent=agent)
 
     # save result
     os.makedirs(data_dir, exist_ok=True)

@@ -4,10 +4,10 @@ import os, pickle
 
 # environment seed
 seed = 3
+# LSPI train coun
+N_epoch = 100
 # make_sample episode count
 N_episode = 10000
-# LSPI train count
-N_epoch = 100
 # Evaluation count per leaning
 N_eval = 10000
 # data dir
@@ -38,5 +38,5 @@ if __name__ == '__main__':
 
     # save result
     os.makedirs(data_dir, exist_ok=True)
-    with open(os.path.join(data_dir, "qtable_rewards.txt"), "wb") as f:
+    with open(os.path.join(data_dir, "qlearning_rewards.txt"), "wb") as f:
         pickle.dump(rewards, f)

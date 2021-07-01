@@ -6,6 +6,7 @@ INSTALL_REQUIRES = [
     "numpy>=1.21.0",
     "pytest>=6.2.4",
     "scipy>=1.6.3",
+    "seaborn>=0.11.1"
 ]
 
 setup(

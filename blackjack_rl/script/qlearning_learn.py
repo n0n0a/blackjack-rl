@@ -1,31 +1,29 @@
 from blackjack_rl.envs.eleven_ace import BlackjackEnv
-from blackjack_rl.agent.lspi import LSPIAgent
+from blackjack_rl.agent.qtable import QTableAgent
 import os, pickle
 
 # environment seed
 seed = 3
 # make_sample episode count
-N_epoch = 10000
+N_episode = 10000
 # LSPI train count
-N_episode = 100
+N_epoch = 100
 # Evaluation count per leaning
 N_eval = 10000
 # data dir
 data_dir = "../../data"
 
-
 if __name__ == '__main__':
     # initialize
     env = BlackjackEnv(seed=seed)
-    agent = LSPIAgent()
-
-    # prepare training data
-    samples = env.make_samples(episode=N_episode)
+    agent = QTableAgent()
 
     # learning
     rewards = []
     for epoch in range(N_epoch):
-        updated = agent.train(train_data=samples)
+        for episode in range(N_episode):
+            result = env.run_one_game(agent=agent)
+            agent.train(result, monte=False)
         mean = 0.0
         for _ in range(N_eval):
             result = env.run_one_game(agent=agent)
@@ -37,11 +35,8 @@ if __name__ == '__main__':
         rewards.append(mean)
         print(f"epoch:{epoch} performance:{mean}")
         # resampling
-        if not updated:
-            print("resampling...")
-            samples = env.make_samples(episode=N_episode, agent=agent)
 
     # save result
     os.makedirs(data_dir, exist_ok=True)
-    with open(os.path.join(data_dir, "lspi_rewards.txt"), "wb") as f:
+    with open(os.path.join(data_dir, "qtable_rewards.txt"), "wb") as f:
         pickle.dump(rewards, f)

@@ -6,12 +6,12 @@ from typing import Tuple, List
 
 
 class QTableAgent(Agent):
-    def __init__(self):
+    def __init__(self, gamma: float = 0.9, alpha: float = 0.02, coef: float = 0.0001):
         # vector w
         self.qtable = defaultdict(lambda: np.zeros(2))
-        self.gamma = 0.9
-        self.alpha = 0.02
-        self.coef = 0.0001
+        self.gamma = gamma
+        self.alpha = alpha
+        self.coef = coef
         self.train_count = 0
 
     # select action
@@ -46,7 +46,7 @@ class QTableAgent(Agent):
             else:
                 q_next = 0
                 if (not at) and (self._isvalid(stt)):
-                    q_next = self.qtable[stt][at]
+                    q_next =  max(self.qtable[stt][1], self.qtable[stt][0])
                 self.qtable[st][at] += self.alpha * (rtt + q_next - self.qtable[st][at])
             different = different or (self.qtable[st][at] != old_val)
         self.train_count += 1

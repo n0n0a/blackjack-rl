@@ -24,7 +24,6 @@ if __name__ == '__main__':
         for episode in range(N_episode):
             result = env.run_one_game(agent=agent)
             agent.train(result)
-        print(agent.qtable)
         mean = 0.0
         for _ in range(N_eval):
             result = env.run_one_game(agent=agent)

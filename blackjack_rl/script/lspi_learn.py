@@ -5,9 +5,9 @@ import os, pickle
 # environment seed
 seed = 3
 # make_sample episode count
-N_episode = 30000
+N_epoch = 10000
 # LSPI train count
-N_train = 10000
+N_episode = 100
 # Evaluation count per leaning
 N_eval = 10000
 # data dir
@@ -24,7 +24,7 @@ if __name__ == '__main__':
 
     # learning
     rewards = []
-    for epoch in range(N_train):
+    for epoch in range(N_epoch):
         updated = agent.train(train_data=samples)
         mean = 0.0
         for _ in range(N_eval):

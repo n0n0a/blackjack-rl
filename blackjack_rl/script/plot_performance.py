@@ -5,8 +5,8 @@ import os, pickle
 _base = os.path.dirname(os.path.abspath(__file__))#実行中のファイル(このファイル)の絶対パス
 data_dir = os.path.join(_base, "../../data")#実行中のファイルからの相対パスでdataの出力先を決定
 lspi_path = os.path.join(data_dir, "lspi_rewards.pkl")
-monte_path = os.path.join(data_dir, "monte_rewards.txt")
-qlearning_path = os.path.join(data_dir, "qlearning_rewards.txt")
+monte_path = os.path.join(data_dir, "monte_rewards.pkl")
+qlearning_path = os.path.join(data_dir, "qlearning_rewards.pkl")
 plot_path = os.path.join(data_dir, "performance.jpg")
 
 

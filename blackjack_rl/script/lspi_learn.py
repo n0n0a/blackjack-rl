@@ -5,13 +5,17 @@ import os,pickle
 # environment seed
 seed = 5
 # make_sample episode count
-N_epoch = 100
+#N_epoch = 100
+N_epoch = 10
 # LSPI train count
-N_episode = 10000
+#N_episode = 10000
+N_episode = 100
 # Evaluation count per leaning
-N_eval = 10000
+#N_eval = 10000
+N_eval = 100
 # data dir
-data_dir = "../../data"
+_base = os.path.dirname(os.path.abspath(__file__))#実行中のファイル(このファイル)の絶対パス
+data_dir = os.path.join(_base, "../../data")#実行中のファイルからの相対パスでdataの出力先を決定
 
 
 if __name__ == '__main__':

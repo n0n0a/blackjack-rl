@@ -1,6 +1,7 @@
 from blackjack_rl.envs.eleven_ace import BlackjackEnv
 from blackjack_rl.agent.lspi import LSPIAgent
 import os,pickle
+import datetime
 
 # environment seed
 seed = 5
@@ -48,5 +49,8 @@ if __name__ == '__main__':
     # save result
     print(rewards)
     os.makedirs(data_dir, exist_ok=True)
-    with open(os.path.join(data_dir, "lspi_rewards.txt"), "wb") as f:
+    now = datetime.datetime.now()
+    with open(os.path.join(data_dir, "lspi_rewards.pkl"), "wb") as f:
+        pickle.dump(rewards, f)
+    with open(os.path.join(data_dir, "lspi_rewards_"+now.strftime('%Y%m%d_%H%M%S')+".pkl"), "wb") as f:
         pickle.dump(rewards, f)

@@ -14,6 +14,7 @@ N_eval = 10000
 # data dir
 _base = os.path.dirname(os.path.abspath(__file__))#実行中のファイル(このファイル)の絶対パス
 data_dir = os.path.join(_base, "../../data")#実行中のファイルからの相対パスでdataの出力先を決定
+detail_dir = os.path.join(_base, "../../data/detail")
 
 
 if __name__ == '__main__':
@@ -46,8 +47,9 @@ if __name__ == '__main__':
     # save result
     print(rewards)
     os.makedirs(data_dir, exist_ok=True)
+    os.makedirs(detail_dir, exist_ok=True)
     now = datetime.datetime.now()
     with open(os.path.join(data_dir, "lspi_rewards.pkl"), "wb") as f:
         pickle.dump(rewards, f)
-    with open(os.path.join(data_dir, "lspi_rewards_"+now.strftime('%Y%m%d_%H%M%S')+".pkl"), "wb") as f:
+    with open(os.path.join(detail_dir, "lspi_rewards_"+now.strftime('%Y%m%d_%H%M%S')+".pkl"), "wb") as f:
         pickle.dump(rewards, f)

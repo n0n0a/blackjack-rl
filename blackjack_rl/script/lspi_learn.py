@@ -29,6 +29,7 @@ if __name__ == '__main__':
     rewards = []
     weights_eleven = []
     weights_one = []
+    weights = []
     for epoch in range(N_epoch):
         updated = agent.train(train_data=samples)
         mean = 0.0
@@ -40,11 +41,7 @@ if __name__ == '__main__':
         mean /= N_eval
         # think reward mean as performance
         rewards.append(mean)
-
-        if(env.player.have_eleven_ace):
-            weights_eleven.append(agent.weight)
-        else:
-            weights_one.append(agent.weight)
+        weights.append(agent.weight)
         print(f"epoch:{epoch} performance:{mean}")
         # # resampling
         # if not updated:
@@ -52,7 +49,6 @@ if __name__ == '__main__':
         #     samples = env.make_samples(episode=N_episode, agent=agent)
 
     # save result
-    weights = [weights_one, weights_eleven]
 
     print(rewards)
     os.makedirs(data_dir, exist_ok=True)

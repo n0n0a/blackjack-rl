@@ -27,6 +27,9 @@ if __name__ == '__main__':
 
     # learning
     rewards = []
+    weights_eleven = []
+    weights_one = []
+    weights = []
     for epoch in range(N_epoch):
         updated = agent.train(train_data=samples)
         mean = 0.0
@@ -38,6 +41,7 @@ if __name__ == '__main__':
         mean /= N_eval
         # think reward mean as performance
         rewards.append(mean)
+        weights.append(agent.weight)
         print(f"epoch:{epoch} performance:{mean}")
         # # resampling
         # if not updated:
@@ -45,6 +49,7 @@ if __name__ == '__main__':
         #     samples = env.make_samples(episode=N_episode, agent=agent)
 
     # save result
+
     print(rewards)
     os.makedirs(data_dir, exist_ok=True)
     os.makedirs(detail_dir, exist_ok=True)
@@ -53,3 +58,8 @@ if __name__ == '__main__':
         pickle.dump(rewards, f)
     with open(os.path.join(detail_dir, "lspi_rewards_"+now.strftime('%Y%m%d_%H%M%S')+".pkl"), "wb") as f:
         pickle.dump(rewards, f)
+
+    with open(os.path.join(data_dir, "lspi_weights.pkl"), "wb") as f:
+        pickle.dump(weights, f)
+    with open(os.path.join(detail_dir, "lspi_weights_"+now.strftime('%Y%m%d_%H%M%S')+".pkl"), "wb") as f:
+        pickle.dump(weights, f)

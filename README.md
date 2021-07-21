@@ -15,7 +15,7 @@ $ cd blackjack_rl/script
 $ python lspi_learn.py
 ```
 
-# Direcotory structure
+# ♤Direcotory structure
 ```shell
 blackjack-rl
 ├── LICENSE

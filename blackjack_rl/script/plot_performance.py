@@ -101,12 +101,7 @@ def plot_Q():
 
 
 if __name__ == '__main__':
-<<<<<<< HEAD
     plot_Q()
     plot_performance()
-=======
-    plot_performance()
-    # plot_Q()
->>>>>>> f79ff7398bb34a4304d5be99dfbefd484ceb5456
 
     plt.show()

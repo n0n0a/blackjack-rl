@@ -25,7 +25,6 @@ def plot_performance():
     ax = fig.add_subplot(1, 1, 1)
     for idx, path in enumerate(paths):
         if os.path.exists(path):
-            print(path)
             with open(path, "rb") as f:
                 data = pickle.load(f)
                 x = list(range(len(data)))
@@ -57,8 +56,7 @@ def plot_Q():
                             _max = diff if _max < diff else _max
                             _min = diff if _min > diff else _min
                 
-                mappable1 = ax2[0].pcolor(heatmap, cmap='seismic')
-
+                mappable1 = ax2[0].pcolor(heatmap)
                 ax2[0].set_xlabel("Upcard of Dealerr")
                 ax2[0].xaxis.set_major_formatter(mpl.ticker.ScalarFormatter(-1))
                 ax2[0].set_ylabel("Sum of Player's hand")
@@ -77,8 +75,7 @@ def plot_Q():
                             _max = diff if _max < diff else _max
                             _min = diff if _min > diff else _min
                 
-                mappable2 = ax2[1].pcolor(heatmap, cmap='seismic')
-
+                mappable2 = ax2[1].pcolor(heatmap)
                 ax2[1].set_xlabel("Upcard of Dealer")
                 ax2[1].xaxis.set_major_formatter(mpl.ticker.ScalarFormatter(-1))
                 ax2[1].set_ylabel("Sum of Player's hand")
@@ -89,9 +86,8 @@ def plot_Q():
     #カラーバーの設定
     axpos = ax2[1].get_position()
     cbar_ax = fig2.add_axes([0.87, axpos.y0, 0.02, axpos.height])
-    norm = colors.Normalize(vmin=-max(_min,_max),vmax=max(_min,_max))
-    mappable = ScalarMappable(cmap='seismic',norm=norm)
-
+    norm = colors.Normalize(vmin=_min,vmax=_max)
+    mappable = ScalarMappable(cmap='winter',norm=norm)
     mappable._A = []
     fig2.colorbar(mappable, cax=cbar_ax, label = "Diff b/w [hit] & [stand]")
 

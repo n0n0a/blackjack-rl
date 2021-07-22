@@ -22,13 +22,14 @@ def plot_performance():
     paths = [lspi_path, monte_path, qlearning_path]
     names = ["lspi", "monte", "qlearning"]
     fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
     for idx, path in enumerate(paths):
         if os.path.exists(path):
+            print(path)
             with open(path, "rb") as f:
                 data = pickle.load(f)
                 x = list(range(len(data)))
                 print(data)
-                ax = fig.add_subplot(1, 1, 1)
                 ax.plot(x, data, label=names[idx])
                 ax.set_xlabel('epoch')
                 ax.set_ylabel('reward')

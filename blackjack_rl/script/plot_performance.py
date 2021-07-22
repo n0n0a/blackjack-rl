@@ -7,8 +7,8 @@ import numpy as np
 from blackjack_rl.agent.lspi import LSPIAgent
 
 # data dir
-_base = os.path.dirname(os.path.abspath(__file__))#実行中のファイル(このファイル)の絶対パス
-data_dir = os.path.join(_base, "../../data")#実行中のファイルからの相対パスでdataの出力先を決定
+_base = os.path.dirname(os.path.abspath(__file__))  # 実行中のファイル(このファイル)の絶対パス
+data_dir = os.path.join(_base, "..\..\data")      # 実行中のファイルからの相対パスでdataの出力先を決定
 lspi_path = os.path.join(data_dir, "lspi_rewards.pkl")
 monte_path = os.path.join(data_dir, "monte_rewards.pkl")
 qlearning_path = os.path.join(data_dir, "qlearning_rewards.pkl")
@@ -19,6 +19,7 @@ lspi_weights_pass = os.path.join(data_dir, "lspi_weights.pkl")
 
 
 def plot_performance():
+    print(data_dir)
     paths = [lspi_path, monte_path, qlearning_path]
     names = ["lspi", "monte", "qlearning"]
     fig = plt.figure()
@@ -27,11 +28,7 @@ def plot_performance():
             with open(path, "rb") as f:
                 data = pickle.load(f)
                 x = list(range(len(data)))
-                print(data)
-                ax = fig.add_subplot(1, 1, 1)
-                ax.plot(x, data, label=names[idx])
-                ax.set_xlabel('epoch')
-                ax.set_ylabel('reward')
+                plt.plot(x, data, label=names[idx])
     fig.legend()
     fig.savefig(plot_path)
 
@@ -104,7 +101,12 @@ def plot_Q():
 
 
 if __name__ == '__main__':
+<<<<<<< HEAD
     plot_Q()
     plot_performance()
+=======
+    plot_performance()
+    # plot_Q()
+>>>>>>> f79ff7398bb34a4304d5be99dfbefd484ceb5456
 
     plt.show()

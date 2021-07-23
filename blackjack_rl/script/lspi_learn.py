@@ -30,6 +30,7 @@ if __name__ == '__main__':
     weights_eleven = []
     weights_one = []
     weights = []
+    scattered_rewards = []
     for epoch in range(N_epoch):
         updated = agent.train(train_data=samples)
         mean = 0.0
@@ -38,6 +39,7 @@ if __name__ == '__main__':
             if _ == 0:
                 print(result)
             mean += result[-1][2]
+            scattered_rewards.append([epoch, result[-1][2]])
         mean /= N_eval
         # think reward mean as performance
         rewards.append(mean)
@@ -63,3 +65,8 @@ if __name__ == '__main__':
         pickle.dump(weights, f)
     with open(os.path.join(detail_dir, "lspi_weights_"+now.strftime('%Y%m%d_%H%M%S')+".pkl"), "wb") as f:
         pickle.dump(weights, f)
+        
+    with open(os.path.join(data_dir, "lspi_scattered_rewards.pkl"), "wb") as f:
+        pickle.dump(scattered_rewards, f)
+    with open(os.path.join(detail_dir, "lspi_scattered_rewards_"+now.strftime('%Y%m%d_%H%M%S')+".pkl"), "wb") as f:
+        pickle.dump(scattered_rewards, f)

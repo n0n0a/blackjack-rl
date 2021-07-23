@@ -20,6 +20,8 @@ scattered_plot_path = os.path.join(data_dir, "scattered_performance.jpg")
 lspi_weights_pass = os.path.join(data_dir, "lspi_weights.pkl")
 
 lspi_scattered_rewards_path = os.path.join(data_dir, "lspi_scattered_rewards.pkl")
+monte_scattered_rewards_path = os.path.join(data_dir, "monte_scattered_rewards.pkl")
+qlearning_scattered_rewards_path = os.path.join(data_dir, "qlearning_scattered_rewards.pkl")
 
 
 def plot_performance():
@@ -37,8 +39,8 @@ def plot_performance():
     fig.savefig(plot_path)
 
 def plot_ranged_performance():
-    paths = [lspi_scattered_rewards_path]
-    names = ["lspi"]
+    paths = [lspi_scattered_rewards_path, monte_scattered_rewards_path, qlearning_scattered_rewards_path]
+    names = ["lspi", "monte", "qlearning"]
     fig3 = plt.figure()
     for idx, path in enumerate(paths):
         if os.path.exists(path):
@@ -52,7 +54,7 @@ def plot_ranged_performance():
                 plt.ylabel('reward')
         else:
             print("no file")
-    fig3.legend()
+    # fig3.legend()
     fig3.savefig(scattered_plot_path)
 
 def plot_Q():

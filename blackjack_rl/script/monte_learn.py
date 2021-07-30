@@ -23,6 +23,7 @@ if __name__ == '__main__':
 
     # learning
     rewards = []
+    scattered_rewards = []
     for epoch in range(N_epoch):
         for episode in range(N_episode):
             result = env.run_one_game(agent=agent)
@@ -33,6 +34,7 @@ if __name__ == '__main__':
             if _ == 0:
                 print(result)
             mean += result[-1][2]
+            scattered_rewards.append([epoch, result[-1][2]])
         mean /= N_eval
         # think reward mean as performance
         rewards.append(mean)
@@ -47,3 +49,8 @@ if __name__ == '__main__':
         pickle.dump(rewards, f)
     with open(os.path.join(detail_dir, "monte_rewards_"+now.strftime('%Y%m%d_%H%M%S')+".pkl"), "wb") as f:
         pickle.dump(rewards, f)
+        
+    with open(os.path.join(data_dir, "monte_scattered_rewards.pkl"), "wb") as f:
+        pickle.dump(scattered_rewards, f)
+    with open(os.path.join(detail_dir, "monte_scattered_rewards_"+now.strftime('%Y%m%d_%H%M%S')+".pkl"), "wb") as f:
+        pickle.dump(scattered_rewards, f)

@@ -5,6 +5,7 @@ import matplotlib.colors as colors
 import os, pickle
 import numpy as np
 from blackjack_rl.agent.lspi import LSPIAgent
+import seaborn as sns
 
 # data dir
 _base = os.path.dirname(os.path.abspath(__file__))  # 実行中のファイル(このファイル)の絶対パス
@@ -14,8 +15,13 @@ monte_path = os.path.join(data_dir, "monte_rewards.pkl")
 qlearning_path = os.path.join(data_dir, "qlearning_rewards.pkl")
 plot_path = os.path.join(data_dir, "performance.jpg")
 qplot_path = os.path.join(data_dir, "Qperformance.jpg")
+scattered_plot_path = os.path.join(data_dir, "scattered_performance.jpg")
 
 lspi_weights_pass = os.path.join(data_dir, "lspi_weights.pkl")
+
+lspi_scattered_rewards_path = os.path.join(data_dir, "lspi_scattered_rewards.pkl")
+monte_scattered_rewards_path = os.path.join(data_dir, "monte_scattered_rewards.pkl")
+qlearning_scattered_rewards_path = os.path.join(data_dir, "qlearning_scattered_rewards.pkl")
 
 
 def plot_performance():
@@ -31,6 +37,25 @@ def plot_performance():
                 plt.plot(x, data, label=names[idx])
     fig.legend()
     fig.savefig(plot_path)
+
+def plot_ranged_performance():
+    paths = [lspi_scattered_rewards_path, monte_scattered_rewards_path, qlearning_scattered_rewards_path]
+    names = ["lspi", "monte", "qlearning"]
+    fig3 = plt.figure()
+    for idx, path in enumerate(paths):
+        if os.path.exists(path):
+            with open(path, "rb") as f:
+                data = np.array(pickle.load(f))
+                print(path)
+                print(data)
+                sns.lineplot(x=data[:,0], y=data[:,1], ci=95, label=names[idx])
+                # plt.scatter(x=data[:,0], y=data[:,1], s=0.1)
+                plt.xlabel('epoch')
+                plt.ylabel('reward')
+        else:
+            print("no file")
+    # fig3.legend()
+    fig3.savefig(scattered_plot_path)
 
 def plot_Q():
     paths = [lspi_weights_pass]
@@ -101,7 +126,7 @@ def plot_Q():
 
 
 if __name__ == '__main__':
+    plot_Q()
     plot_performance()
-    # plot_Q()
-
+    plot_ranged_performance()
     plt.show()

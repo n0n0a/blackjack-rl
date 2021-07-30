@@ -14,7 +14,7 @@ all_space = (10, 9, 2, 2)
 # all space size
 all_size = np.prod(all_space)
 # regularize factor
-episilon = 0.0000001
+episilon = 1.0e-6
 tau = 0.9
 
 # out of class due to multiprocessing

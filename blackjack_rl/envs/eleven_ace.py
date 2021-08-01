@@ -55,6 +55,8 @@ class BlackjackEnv(gym.Env):
         self.dealer = Hand()
         self.seed(seed)
         self.reset()
+        self.player_bursts = [0, 0]
+        self.player_stand_lose = [0, 0]
 
     # set seed
     def seed(self, seed: int = None) -> List[int]:
@@ -89,10 +91,12 @@ class BlackjackEnv(gym.Env):
     def step(self, action: Action) -> Tuple[State, Reward, bool, dict]:
         done = False
         reward = 0
+        ace = self.player.have_eleven_ace
         if action:
             self.player.draw()
             if self.player.sum > 21:
                 done = True
+                self.player_bursts[ace] += 1
                 reward = -1
             elif self.player.sum == 21:
                 done = True
@@ -100,6 +104,7 @@ class BlackjackEnv(gym.Env):
         else:
             done = True
             reward = self._judge_winner()
+            self.player_stand_lose[ace] += (reward == -1)
         return self._get_obs(), reward, done, {}
 
     # make particular samples efficiently

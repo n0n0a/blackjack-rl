@@ -6,7 +6,7 @@ from typing import Tuple, List
 
 
 class QTableAgent(Agent):
-    def __init__(self, gamma: float = 0.9, alpha: float = 0.02, coef: float = 0.0001):
+    def __init__(self, gamma: float = 1.0, alpha: float = 0.02, coef: float = 0.0001):
         # vector w
         self.qtable = defaultdict(lambda: np.zeros(2))
         self.gamma = gamma
